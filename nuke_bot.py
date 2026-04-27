@@ -1,14 +1,16 @@
 import discord
 from discord.ext import commands
-from discord import app_commands
 import asyncio
+import os
 
 # ── Config ──────────────────────────────────────────────────────────────────
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+print(f"Token loaded: {BOT_TOKEN is not None}")
+print(f"Token length: {len(BOT_TOKEN) if BOT_TOKEN else 0}")
 
-# Only users with these IDs can run nuke commands (add your Discord user ID)
+# Only users with these IDs can run nuke commands
 AUTHORIZED_USER_IDS = [
-    # 123456789012345678,  # <-- Add your Discord user ID here
+    933543370935128204,
 ]
 
 # ── Bot Setup ────────────────────────────────────────────────────────────────
