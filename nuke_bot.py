@@ -21,13 +21,6 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# ── Auth Check ────────────────────────────────────────────────────────────────
-def is_authorized(ctx):
-    return (
-        ctx.author.guild_permissions.administrator
-        and (not AUTHORIZED_USER_IDS or ctx.author.id in AUTHORIZED_USER_IDS)
-    )
-
 # ── Helpers ───────────────────────────────────────────────────────────────────
 async def confirm(ctx, action: str) -> bool:
     """Ask for confirmation before nuking."""
@@ -61,7 +54,7 @@ async def send_result(ctx, results: list[str]):
 # ── Commands ──────────────────────────────────────────────────────────────────
 
 @bot.command(name="nuke_channels")
-@commands.check(is_authorized)
+
 async def nuke_channels(ctx):
     """Delete all channels in the server."""
     if not await confirm(ctx, "delete ALL channels"):
@@ -88,7 +81,7 @@ async def nuke_channels(ctx):
 
 
 @bot.command(name="nuke_roles")
-@commands.check(is_authorized)
+
 async def nuke_roles(ctx):
     """Delete all non-managed, non-default roles."""
     if not await confirm(ctx, "delete all roles"):
@@ -110,7 +103,7 @@ async def nuke_roles(ctx):
 
 
 @bot.command(name="nuke_channels_roles")
-@commands.check(is_authorized)
+
 async def nuke_channels_roles(ctx):
     """Delete all channels and roles."""
     if not await confirm(ctx, "delete all channels AND roles"):
@@ -145,7 +138,7 @@ async def nuke_channels_roles(ctx):
 
 
 @bot.command(name="nuke_kick")
-@commands.check(is_authorized)
+
 async def nuke_kick(ctx):
     """Delete all channels & roles, then kick all non-bot members."""
     if not await confirm(ctx, "delete channels, roles, AND kick all members"):
@@ -192,7 +185,7 @@ async def nuke_kick(ctx):
 
 
 @bot.command(name="nuke_full")
-@commands.check(is_authorized)
+
 async def nuke_full(ctx):
     """Full reset: channels, roles, emojis, and kick members."""
     if not await confirm(ctx, "FULL RESET — channels, roles, emojis, and kick all members"):
