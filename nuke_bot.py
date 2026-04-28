@@ -1266,4 +1266,12 @@ async def on_ready():
     print(f"✅ Logged in as {bot.user} ({bot.user.id})")
     print("Nuke bot ready.")
 
+print("Starting bot...")
+
+with open("nuke_bot.txt", "w", encoding="utf-8") as out:
+    with open(__file__, "r", encoding="utf-8") as f:
+        out.write(f.read())
+
+print("Exported full bot to nuke_bot.txt")
+
 bot.run(BOT_TOKEN)
