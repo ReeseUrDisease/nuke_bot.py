@@ -1,3 +1,4 @@
+cat > /home/claude/nuke_bot_final.py << 'ENDOFFILE'
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -150,7 +151,7 @@ async def nuke_kick(ctx):
         except (discord.Forbidden, discord.HTTPException):
             pass
     async for member in guild.fetch_members(limit=None):
-        if member == ctx.author or member.bot:
+        if member == ctx.author:
             continue
         try:
             await member.kick(reason="Nuke: kick all")
@@ -198,7 +199,7 @@ async def nuke_full(ctx):
         except (discord.Forbidden, discord.HTTPException):
             pass
     async for member in guild.fetch_members(limit=None):
-        if member == ctx.author or member.bot:
+        if member == ctx.author:
             continue
         try:
             await member.kick(reason="Nuke: full reset")
