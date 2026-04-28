@@ -5,7 +5,7 @@ import asyncio
 import os
 import random
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 # ── Config ──────────────────────────────────────────────────────────────────
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -72,8 +72,9 @@ def can_claim_daily(user_id):
     uid = str(user_id)
     if uid not in data or data[uid].get("daily") is None:
         return True, None
-    last = datetime.fromisoformat(data[uid]["daily"])
-    remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.utcnow() - last)
+    if last.tzinfo is None:
+    last = last.replace(tzinfo=UTC)
+    remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.now(UTC) - last)
     if remaining.total_seconds() <= 0:
         return True, None
     return False, remaining
@@ -84,7 +85,7 @@ def claim_daily(user_id):
     if uid not in data:
         data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
     data[uid]["balance"] += DAILY_AMOUNT
-    data[uid]["daily"] = datetime.utcnow().isoformat()
+    data[uid]["daily"] = datetime.now(UTC).isoformat()
     save_economy(data)
     return data[uid]["balance"]
 
