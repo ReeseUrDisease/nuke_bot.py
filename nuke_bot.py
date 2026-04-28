@@ -73,7 +73,7 @@ def can_claim_daily(user_id):
     if uid not in data or data[uid].get("daily") is None:
         return True, None
     if last.tzinfo is None:
-    last = last.replace(tzinfo=UTC)
+        last = last.replace(tzinfo=UTC)
     remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.now(UTC) - last)
     if remaining.total_seconds() <= 0:
         return True, None
