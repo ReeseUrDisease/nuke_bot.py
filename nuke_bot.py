@@ -1,4 +1,3 @@
-cat > /home/claude/nuke_bot_final.py << 'ENDOFFILE'
 import discord
 from discord.ext import commands
 from discord import app_commands
