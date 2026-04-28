@@ -5,7 +5,7 @@ import asyncio
 import os
 import random
 import json
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 
 # ── Config ──────────────────────────────────────────────────────────────────
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -72,9 +72,8 @@ def can_claim_daily(user_id):
     uid = str(user_id)
     if uid not in data or data[uid].get("daily") is None:
         return True, None
-    if last.tzinfo is None:
-        last = last.replace(tzinfo=UTC)
-    remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.now(UTC) - last)
+    last = datetime.fromisoformat(data[uid]["daily"])
+    remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.utcnow() - last)
     if remaining.total_seconds() <= 0:
         return True, None
     return False, remaining
@@ -85,7 +84,7 @@ def claim_daily(user_id):
     if uid not in data:
         data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
     data[uid]["balance"] += DAILY_AMOUNT
-    data[uid]["daily"] = datetime.now(UTC).isoformat()
+    data[uid]["daily"] = datetime.utcnow().isoformat()
     save_economy(data)
     return data[uid]["balance"]
 
@@ -1265,13 +1264,5 @@ async def on_ready():
     await tree.sync()
     print(f"✅ Logged in as {bot.user} ({bot.user.id})")
     print("Nuke bot ready.")
-
-print("Starting bot...")
-
-with open("nuke_bot.txt", "w", encoding="utf-8") as out:
-    with open(__file__, "r", encoding="utf-8") as f:
-        out.write(f.read())
-
-print("Exported full bot to nuke_bot.txt")
 
 bot.run(BOT_TOKEN)
