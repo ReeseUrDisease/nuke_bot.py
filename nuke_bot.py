@@ -21,6 +21,10 @@ STARTING_BALANCE = 500
 DAILY_AMOUNT = 100
 DAILY_COOLDOWN_HOURS = 24
 
+# ── Nuke Permission Helper ────────────────────────────────────────────────
+def is_nuke_authorized(interaction: discord.Interaction) -> bool:
+    return interaction.user.id in AUTHORIZED_USER_IDS
+
 # ── Palette ──────────────────────────────────────────────────────────────────
 class C:
     """Centralised colour palette — change once, applies everywhere."""
@@ -121,24 +125,60 @@ def _base_embed(title: str, description: str = "", color: discord.Color = C.PRIM
 async def confirm(ctx, action: str) -> bool:
     embed = _base_embed(
         "⚠️  Confirm Action",
-        f"You are about to **{action}**.\n\n> Type `yes` to proceed or `no` to cancel.\n> This prompt expires in **15 seconds**.",
+        (
+            f"You are about to **{action}**.\n\n"
+            "⚠️ This is a destructive action.\n"
+            "To proceed, type **CONFIRM** exactly.\n"
+            "Anything else or no response in 15 seconds cancels."
+        ),
         C.WARNING,
     )
     await ctx.send(embed=embed)
 
     def check(m):
-        return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["yes", "no"]
+        return (
+            m.author == ctx.author and
+            m.channel == ctx.channel
+        )
 
     try:
-        reply = await bot.wait_for("message", timeout=15.0, check=check)
-        return reply.content.lower() == "yes"
-    except asyncio.TimeoutError:
-        timeout_embed = _base_embed("⏱️  Timed Out", "No response received — action cancelled.", C.NEUTRAL)
-        await ctx.send(embed=timeout_embed)
+        reply = await ctx.bot.wait_for(
+            "message",
+            timeout=15.0,
+            check=check
+        )
+
+        if reply.content.strip().upper() == "CONFIRM":
+            return True
+
+        await ctx.send(
+            embed=_base_embed(
+                "❌ Cancelled",
+                "Confirmation failed.",
+                C.NEUTRAL
+            ),
+            delete_after=5
+        )
         return False
 
+    except asyncio.TimeoutError:
+        await ctx.send(
+            embed=_base_embed(
+                "⏱️  Timed Out",
+                "No response received — action cancelled.",
+                C.NEUTRAL
+            ),
+            delete_after=5
+        )
+        return False
+
+
 async def send_result(ctx, results: list[str]):
-    embed = _base_embed("💥  Operation Complete", "\n".join(results), C.DANGER)
+    embed = _base_embed(
+        "💥  Operation Complete",
+        "\n".join(results),
+        C.DANGER
+    )
     await ctx.send(embed=embed)
 
 
@@ -148,6 +188,7 @@ async def send_result(ctx, results: list[str]):
 @bot.command(name="nuke_channels")
 async def nuke_channels(ctx):
     if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete **ALL** channels"):
         return
@@ -170,6 +211,7 @@ async def nuke_channels(ctx):
 @bot.command(name="nuke_roles")
 async def nuke_roles(ctx):
     if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete all **roles**"):
         return
@@ -189,6 +231,7 @@ async def nuke_roles(ctx):
 @bot.command(name="nuke_channels_roles")
 async def nuke_channels_roles(ctx):
     if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete all channels **and** roles"):
         return
@@ -220,6 +263,7 @@ async def nuke_channels_roles(ctx):
 @bot.command(name="nuke_kick")
 async def nuke_kick(ctx):
     if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete channels, roles, **and kick all members**"):
         return
@@ -264,6 +308,7 @@ async def nuke_kick(ctx):
 @bot.command(name="nuke_full")
 async def nuke_full(ctx):
     if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "perform a **FULL RESET** — channels, roles, emojis, and kick all members"):
         return
@@ -320,7 +365,7 @@ async def nuke_help(ctx):
     embed.add_field(name="!nuke_channels_roles", value="Delete all channels and roles",                 inline=False)
     embed.add_field(name="!nuke_kick",           value="Delete channels, roles, and kick all members", inline=False)
     embed.add_field(name="!nuke_full",           value="Full reset: channels, roles, emojis, members", inline=False)
-    embed.set_footer(text="⚠️  Requires Administrator · All actions ask for confirmation.")
+    embed.set_footer(text="⚠️  Requires Administrator · All actions ask for ation.")
     await ctx.send(embed=embed)
 
 
@@ -328,11 +373,8 @@ async def nuke_help(ctx):
 # 🔒 SECURITY / MODERATION COMMANDS
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _mod_check(interaction: discord.Interaction, perm: str) -> bool:
-    """Returns True if the invoker has the required permission or is an authorised user."""
-    if interaction.user.id in AUTHORIZED_USER_IDS:
-        return True
-    return getattr(interaction.user.guild_permissions, perm, False)
+def _mod_check(interaction: discord.Interaction, permission: str = None):
+    return interaction.user.id == 1278035697416146966
 
 # ── /ban ──────────────────────────────────────────────────────────────────────
 @tree.command(name="ban", description="Ban a member from the server.")
