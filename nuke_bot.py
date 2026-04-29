@@ -37,6 +37,29 @@ class C:
     CASINO     = discord.Color.from_rgb(255, 185, 0)     # Casino gold
     PURPLE     = discord.Color.from_rgb(155, 89,  182)   # Purple
 
+# ══════════════════════════════════════════════════════════════════════════════
+# ✨ AESTHETIC UI SYSTEM
+# ══════════════════════════════════════════════════════════════════════════════
+
+BOT_FOOTER = "⚡ HYDRA SYSTEMS • Advanced Utility Bot"
+BOT_THUMBNAIL = "https://i.pinimg.com/736x/13/46/1a/13461a1b67466ef216cfb8f36a3c32af.jpg"  # replace with your own image if wanted
+
+def _base_embed(title, description=None, color=C.PRIMARY):
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=datetime.utcnow()
+    )
+
+    embed.set_footer(
+        text=BOT_FOOTER,
+        icon_url="https://cdn.discordapp.com/emojis/1066843307204923402.webp"
+    )
+
+    embed.set_thumbnail(url=BOT_THUMBNAIL)
+
+    return embed
 
 # ── Bot Setup ────────────────────────────────────────────────────────────────
 intents = discord.Intents.default()
@@ -116,10 +139,28 @@ def get_leaderboard():
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛠️ SHARED HELPERS
 # ══════════════════════════════════════════════════════════════════════════════
-def _base_embed(title: str, description: str = "", color: discord.Color = C.PRIMARY) -> discord.Embed:
-    """Returns a clean, styled embed with consistent footer."""
-    embed = discord.Embed(title=title, description=description, color=color)
-    embed.set_footer(text="⚡ Powered by ClvrLabs 🍀")
+# ══════════════════════════════════════════════════════════════════════════════
+# ✨ AESTHETIC UI SYSTEM
+# ══════════════════════════════════════════════════════════════════════════════
+
+BOT_FOOTER = "⚡ HYDRA SYSTEMS • Advanced Utility Bot"
+BOT_THUMBNAIL = "https://i.imgur.com/8Km9tLL.png"  # replace with your own image if wanted
+
+def _base_embed(title, description=None, color=C.PRIMARY):
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=datetime.utcnow()
+    )
+
+    embed.set_footer(
+        text=BOT_FOOTER,
+        icon_url="https://cdn.discordapp.com/emojis/1066843307204923402.webp"
+    )
+
+    embed.set_thumbnail(url=BOT_THUMBNAIL)
+
     return embed
 
 async def confirm(ctx, action: str) -> bool:
