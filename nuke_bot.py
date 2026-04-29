@@ -115,7 +115,7 @@ def get_leaderboard():
 def _base_embed(title: str, description: str = "", color: discord.Color = C.PRIMARY) -> discord.Embed:
     """Returns a clean, styled embed with consistent footer."""
     embed = discord.Embed(title=title, description=description, color=color)
-    embed.set_footer(text="⚡ Powered by Nuke Bot")
+    embed.set_footer(text="⚡ Powered by ClvrLabs 🍀")
     return embed
 
 async def confirm(ctx, action: str) -> bool:
