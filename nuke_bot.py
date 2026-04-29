@@ -187,9 +187,9 @@ async def send_result(ctx, results: list[str]):
 # ══════════════════════════════════════════════════════════════════════════════
 @bot.command(name="nuke_channels")
 async def nuke_channels(ctx):
-if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
-    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
-    return
+    if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+        await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
+        return
     if not await confirm(ctx, "delete **ALL** channels"):
         return
     guild = ctx.guild
