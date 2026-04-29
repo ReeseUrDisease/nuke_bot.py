@@ -187,7 +187,7 @@ async def send_result(ctx, results: list[str]):
 # ══════════════════════════════════════════════════════════════════════════════
 @bot.command(name="nuke_channels")
 async def nuke_channels(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
         await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete **ALL** channels"):
@@ -210,7 +210,7 @@ async def nuke_channels(ctx):
 
 @bot.command(name="nuke_roles")
 async def nuke_roles(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
         await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete all **roles**"):
@@ -230,7 +230,7 @@ async def nuke_roles(ctx):
 
 @bot.command(name="nuke_channels_roles")
 async def nuke_channels_roles(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
         await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete all channels **and** roles"):
@@ -262,7 +262,7 @@ async def nuke_channels_roles(ctx):
 
 @bot.command(name="nuke_kick")
 async def nuke_kick(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
         await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete channels, roles, **and kick all members**"):
@@ -307,7 +307,7 @@ async def nuke_kick(ctx):
 
 @bot.command(name="nuke_full")
 async def nuke_full(ctx):
-    if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
         await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "perform a **FULL RESET** — channels, roles, emojis, and kick all members"):
