@@ -211,7 +211,7 @@ async def nuke_channels(ctx):
 @bot.command(name="nuke_roles")
 async def nuke_roles(ctx):
     if ctx.author.id not in AUTHORIZED_USER_IDS and not ctx.author.guild_permissions.administrator:
-    await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
+        await ctx.send("🚫 You are not authorized to use this command.", delete_after=5)
         return
     if not await confirm(ctx, "delete all **roles**"):
         return
