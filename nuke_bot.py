@@ -144,7 +144,7 @@ def get_leaderboard():
 # ══════════════════════════════════════════════════════════════════════════════
 
 BOT_FOOTER = "⚡ HYDRA SYSTEMS • Advanced Utility Bot"
-BOT_THUMBNAIL = "https://i.imgur.com/8Km9tLL.png"  # replace with your own image if wanted
+BOT_THUMBNAIL = "https://i.pinimg.com/736x/13/46/1a/13461a1b67466ef216cfb8f36a3c32af.jpg"  # replace with your own image if wanted
 
 def _base_embed(title, description=None, color=C.PRIMARY):
     embed = discord.Embed(
@@ -156,7 +156,7 @@ def _base_embed(title, description=None, color=C.PRIMARY):
 
     embed.set_footer(
         text=BOT_FOOTER,
-        icon_url="https://cdn.discordapp.com/emojis/1066843307204923402.webp"
+        icon_url="https://i.pinimg.com/736x/13/46/1a/13461a1b67466ef216cfb8f36a3c32af.jpg"
     )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
