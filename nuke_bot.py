@@ -20,7 +20,7 @@ ECONOMY_FILE = "economy.json"
 STARTING_BALANCE = 500
 DAILY_AMOUNT = 100
 DAILY_COOLDOWN_HOURS = 24
-WORK_COOLDOWN_HOURS = 1
+WORK_COOLDOWN_HOURS = 24
 
 # ── JOB SYSTEM ───────────────────────────────────────────────────────────────
 
@@ -1822,7 +1822,8 @@ async def work(interaction: discord.Interaction):
             return
 
     job = get_job_info(career["job_level"])
-    earnings = job["pay"]
+    hours = job["max_hours_free"]
+    earnings = job["pay"] * hours
     new_bal = update_balance(interaction.user.id, earnings)
 
     career["work_days"] += 1
@@ -1835,17 +1836,17 @@ async def work(interaction: discord.Interaction):
         new_job = get_job_info(career["job_level"])
         embed = _base_embed(
             "📈 PROMOTION!",
-            f"You worked as **{job['name']}** and got promoted!\n\n"
+            f"You worked **{hours}h** as **{job['name']}** and got promoted!\n\n"
             f"🎉 New job: **{new_job['name']}**\n"
-            f"💰 Earned: **${earnings}**\n"
+            f"💰 Earned: **${earnings}** ({hours}h × ${job['pay']}/hr)\n"
             f"💵 Balance: **${new_bal:,}**",
             C.CASINO
         )
     else:
         embed = _base_embed(
             "💼 Work Completed!",
-            f"You worked as **{job['name']}**\n\n"
-            f"💰 Earned: **${earnings}**\n"
+            f"You worked **{hours}h** as **{job['name']}**\n\n"
+            f"💰 Earned: **${earnings}** ({hours}h × ${job['pay']}/hr)\n"
             f"💵 Balance: **${new_bal:,}**",
             C.SUCCESS
         )
