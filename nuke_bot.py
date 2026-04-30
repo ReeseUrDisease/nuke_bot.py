@@ -115,7 +115,8 @@ def get_user_data(user_id):
             "total_won": 0,
             "total_lost": 0,
             "job_level": 0,
-            "work_days": 0
+            "work_days": 0,
+            "time_skipped": 0
         }
         save_economy(data)
     return data[uid]
@@ -127,7 +128,17 @@ def update_balance(user_id, amount):
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
-        data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
+        data[uid] = {
+            "balance": STARTING_BALANCE,
+            "daily": None,
+            "wins": 0,
+            "losses": 0,
+            "total_won": 0,
+            "total_lost": 0,
+            "job_level": 0,
+            "work_days": 0,
+            "time_skipped": 0
+        }
     data[uid]["balance"] += amount
     if amount > 0:
         data[uid]["wins"] = data[uid].get("wins", 0) + 1
@@ -153,7 +164,17 @@ def claim_daily(user_id):
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
-        data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
+        data[uid] = {
+            "balance": STARTING_BALANCE,
+            "daily": None,
+            "wins": 0,
+            "losses": 0,
+            "total_won": 0,
+            "total_lost": 0,
+            "job_level": 0,
+            "work_days": 0,
+            "time_skipped": 0
+        }
     data[uid]["balance"] += DAILY_AMOUNT
     data[uid]["daily"] = datetime.now(UTC).isoformat()
     save_economy(data)
