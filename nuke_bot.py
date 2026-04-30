@@ -22,26 +22,6 @@ DAILY_AMOUNT = 100
 DAILY_COOLDOWN_HOURS = 24
 WORK_COOLDOWN_HOURS = 24
 
-# ── JOB SYSTEM ───────────────────────────────────────────────────────────────
-
-JOB_DATA = {
-    0: {  # HIGH SCHOOL
-        "name": "☕ Coffee Shop Worker (High School)",
-        "pay": 16,
-        "max_hours": 3
-    },
-    1: {  # COLLEGE
-        "name": "📊 Manager (College)",
-        "pay": 18,
-        "max_hours": 10
-    },
-    2: {  # CORPORATE
-        "name": "🏢 Corporate Employee",
-        "pay": 35,
-        "max_hours": 12
-    }
-}
-
 # ── Nuke Permission Helper ────────────────────────────────────────────────
 def is_nuke_authorized(interaction: discord.Interaction) -> bool:
     return interaction.user.id in AUTHORIZED_USER_IDS
@@ -187,26 +167,97 @@ def get_leaderboard():
     return sorted_users[:10]
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# 💼 JOB / CAREER SYSTEM  (8-level economy)
+# ══════════════════════════════════════════════════════════════════════════════
+
+JOB_ECONOMY = {
+    0: {
+        "job":              "☕ Coffee Shop Worker",
+        "pay":              16,
+        "house":            "🛏️ Shared Room",
+        "rent":             30,
+        "max_hours_school": 3,
+        "max_hours_free":   8,
+    },
+    1: {
+        "job":              "🧑‍💼 Assistant Manager",
+        "pay":              20,
+        "house":            "🏚️ Small Apartment",
+        "rent":             70,
+        "max_hours_school": 0,
+        "max_hours_free":   9,
+    },
+    2: {
+        "job":              "🏢 Office Employee",
+        "pay":              28,
+        "house":            "🏢 Studio Apartment",
+        "rent":             140,
+        "max_hours_school": 0,
+        "max_hours_free":   10,
+    },
+    3: {
+        "job":              "📊 Analyst",
+        "pay":              40,
+        "house":            "🏙️ City Apartment",
+        "rent":             260,
+        "max_hours_school": 0,
+        "max_hours_free":   10,
+    },
+    4: {
+        "job":              "💻 Software Engineer",
+        "pay":              65,
+        "house":            "🏠 Modern Condo",
+        "rent":             450,
+        "max_hours_school": 0,
+        "max_hours_free":   10,
+    },
+    5: {
+        "job":              "📈 Senior Engineer",
+        "pay":              90,
+        "house":            "🏡 Suburban House",
+        "rent":             750,
+        "max_hours_school": 0,
+        "max_hours_free":   12,
+    },
+    6: {
+        "job":              "🏦 Investment Banker",
+        "pay":              140,
+        "house":            "🏛️ Luxury Penthouse",
+        "rent":             1300,
+        "max_hours_school": 0,
+        "max_hours_free":   12,
+    },
+    7: {
+        "job":              "👑 CEO",
+        "pay":              250,
+        "house":            "🏰 Mansion Estate",
+        "rent":             2200,
+        "max_hours_school": 0,
+        "max_hours_free":   14,
+    },
+}
+
+# Work days required to be eligible for promotion AT each level (before moving to next)
+PROMOTION_THRESHOLDS = {
+    0: 5,    # Level 0 → 1 after 5 work days
+    1: 10,   # Level 1 → 2 after 10 work days
+    2: 20,   # Level 2 → 3 after 20 work days
+    3: 35,   # Level 3 → 4 after 35 work days
+    4: 55,   # Level 4 → 5 after 55 work days
+    5: 80,   # Level 5 → 6 after 80 work days
+    6: 110,  # Level 6 → 7 after 110 work days
+    # Level 7 is max — no further promotion
+}
+
 def get_job_info(level):
-    jobs = {
-        0: {"name": "☕ Coffee Shop Worker", "pay": 16, "max_hours_school": 3, "max_hours_free": 8},
-        1: {"name": "🧑‍💼 Manager", "pay": 18, "max_hours_school": 0, "max_hours_free": 10},
-        2: {"name": "🏢 Corporate Employee", "pay": 35, "max_hours_school": 0, "max_hours_free": 10},
-    }
-    return jobs.get(level, jobs[0])
+    return JOB_ECONOMY.get(level, JOB_ECONOMY[0])
 
 def can_promote(career):
     level = career["job_level"]
     work_days = career["work_days"]
-
-    promotions = {
-        0: 5,   # Coffee → Manager after 5 work days
-        1: 15,  # Manager → Corporate after 15 total work days
-    }
-
-    if level in promotions and work_days >= promotions[level]:
+    if level in PROMOTION_THRESHOLDS and work_days >= PROMOTION_THRESHOLDS[level]:
         return True
-
     return False
 
 CAREER_FILE = "career.json"
@@ -1790,23 +1841,46 @@ async def minesweeper(interaction: discord.Interaction, size: int = 4, mines: in
     await interaction.response.send_message(embed=embed, view=view)
 
 
-@tree.command(name="job", description="Check your current job and stats")
+# ══════════════════════════════════════════════════════════════════════════════
+# 💼 CAREER COMMANDS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@tree.command(name="job", description="Check your current job, housing, and career stats.")
 async def job(interaction: discord.Interaction):
-    career = get_career(interaction.user.id)
+    career   = get_career(interaction.user.id)
     job_info = get_job_info(career["job_level"])
+    level    = career["job_level"]
+    max_level = max(JOB_ECONOMY.keys())
 
-    embed = _base_embed("💼 Your Job Info", color=C.PRIMARY)
-    embed.add_field(name="Job", value=job_info["name"], inline=False)
-    embed.add_field(name="Pay", value=f"${job_info['pay']}/hour", inline=True)
-    embed.add_field(name="Work Days", value=str(career["work_days"]), inline=True)
-    embed.add_field(name="Level", value=str(career["job_level"]), inline=True)
+    # Next promotion info
+    if level < max_level:
+        threshold  = PROMOTION_THRESHOLDS[level]
+        days_left  = max(0, threshold - career["work_days"])
+        next_job   = get_job_info(level + 1)
+        promo_text = (
+            f"**{next_job['job']}** in **{days_left}** more work day(s)\n"
+            f"_(Next house: {next_job['house']} · Rent: ${next_job['rent']:,}/day)_"
+        )
+    else:
+        promo_text = "👑 You've reached the **top level**!"
 
+    embed = _base_embed("💼  Career & Housing", color=C.PRIMARY)
+    embed.set_thumbnail(url=interaction.user.display_avatar.url)
+    embed.add_field(name="💼 Job",         value=job_info["job"],                     inline=True)
+    embed.add_field(name="💵 Pay",         value=f"${job_info['pay']}/hour",          inline=True)
+    embed.add_field(name="🕐 Hours/Day",   value=str(job_info["max_hours_free"]),     inline=True)
+    embed.add_field(name="🏠 Housing",     value=job_info["house"],                   inline=True)
+    embed.add_field(name="💸 Daily Rent",  value=f"${job_info['rent']:,}",            inline=True)
+    embed.add_field(name="📅 Work Days",   value=str(career["work_days"]),            inline=True)
+    embed.add_field(name="📈 Next Promo",  value=promo_text,                          inline=False)
     await interaction.response.send_message(embed=embed)
 
-@tree.command(name="work", description="Work your job and earn money based on your career level!")
+
+@tree.command(name="work", description="Work your job and earn money (rent is automatically deducted).")
 async def work(interaction: discord.Interaction):
     career = get_career(interaction.user.id)
 
+    # Cooldown check
     last_work = career.get("last_work")
     if last_work:
         last = datetime.fromisoformat(last_work)
@@ -1821,37 +1895,59 @@ async def work(interaction: discord.Interaction):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
-    job = get_job_info(career["job_level"])
-    hours = job["max_hours_free"]
-    earnings = job["pay"] * hours
-    new_bal = update_balance(interaction.user.id, earnings)
+    job_info = get_job_info(career["job_level"])
+    hours    = job_info["max_hours_free"]
+    gross    = job_info["pay"] * hours
+    rent     = job_info["rent"]
+    net      = gross - rent
+
+    # Apply earnings then rent
+    update_balance(interaction.user.id, gross)
+    update_balance(interaction.user.id, -rent)
+    new_bal = get_balance(interaction.user.id)
 
     career["work_days"] += 1
     update_career(interaction.user.id, "work_days", career["work_days"])
     update_career(interaction.user.id, "last_work", datetime.now(UTC).isoformat())
 
+    # Promotion check
     if can_promote(career):
         career["job_level"] += 1
         update_career(interaction.user.id, "job_level", career["job_level"])
         new_job = get_job_info(career["job_level"])
         embed = _base_embed(
-            "📈 PROMOTION!",
-            f"You worked **{hours}h** as **{job['name']}** and got promoted!\n\n"
-            f"🎉 New job: **{new_job['name']}**\n"
-            f"💰 Earned: **${earnings}** ({hours}h × ${job['pay']}/hr)\n"
-            f"💵 Balance: **${new_bal:,}**",
-            C.CASINO
+            "📈  PROMOTION!",
+            f"You worked **{hours}h** as **{job_info['job']}** and earned a promotion!\n\n"
+            f"🎉 New job: **{new_job['job']}**\n"
+            f"🏠 New home: **{new_job['house']}** _(rent: ${new_job['rent']:,}/day)_\n\n"
+            f"💰 Gross pay:  **${gross:,}**\n"
+            f"🏠 Rent:       **-${rent:,}**\n"
+            f"💵 Net:        **${net:,}**\n"
+            f"🏦 Balance:    **${new_bal:,}**",
+            C.CASINO,
         )
     else:
+        level     = career["job_level"]
+        max_level = max(JOB_ECONOMY.keys())
+        if level < max_level:
+            days_left = max(0, PROMOTION_THRESHOLDS[level] - career["work_days"])
+            promo_line = f"📅 **{days_left}** work day(s) until promotion"
+        else:
+            promo_line = "👑 Max level reached!"
+
         embed = _base_embed(
-            "💼 Work Completed!",
-            f"You worked **{hours}h** as **{job['name']}**\n\n"
-            f"💰 Earned: **${earnings}** ({hours}h × ${job['pay']}/hr)\n"
-            f"💵 Balance: **${new_bal:,}**",
-            C.SUCCESS
+            "💼  Work Completed!",
+            f"You worked **{hours}h** as **{job_info['job']}**\n\n"
+            f"💰 Gross pay:  **${gross:,}**\n"
+            f"🏠 Rent:       **-${rent:,}**\n"
+            f"💵 Net:        **${net:,}**\n"
+            f"🏦 Balance:    **${new_bal:,}**\n\n"
+            f"{promo_line}",
+            C.SUCCESS if net >= 0 else C.WARNING,
         )
 
     await interaction.response.send_message(embed=embed)
+
 
 SKIP_COST_PER_DAY = 200
 
@@ -1864,24 +1960,30 @@ async def skiptime(interaction: discord.Interaction, days: int = 1):
         )
         return
 
-    career = get_career(interaction.user.id)
+    career    = get_career(interaction.user.id)
+    max_level = max(JOB_ECONOMY.keys())
 
-    if career["job_level"] >= 2:
+    if career["job_level"] >= max_level:
         await interaction.response.send_message(
-            embed=_base_embed("🏢  Max Level", "You're already at the highest job level!", C.PRIMARY), ephemeral=True
+            embed=_base_embed("👑  Max Level", "You're already at the highest job level!", C.PRIMARY), ephemeral=True
         )
         return
 
-    promotions = {0: 5, 1: 15}
-    days_needed = promotions[career["job_level"]] - career["work_days"]
-    if days_needed <= 0:
-        days_needed = 0
+    level      = career["job_level"]
+    days_needed = max(0, PROMOTION_THRESHOLDS[level] - career["work_days"])
 
-    if days > days_needed and days_needed > 0:
+    if days_needed == 0:
+        await interaction.response.send_message(
+            embed=_base_embed("✅  Already Eligible", "You already qualify for a promotion — just use `/work`!", C.SUCCESS),
+            ephemeral=True,
+        )
+        return
+
+    if days > days_needed:
         days = days_needed
 
     total_cost = SKIP_COST_PER_DAY * days
-    bal = get_balance(interaction.user.id)
+    bal        = get_balance(interaction.user.id)
 
     if total_cost > bal:
         affordable = bal // SKIP_COST_PER_DAY
@@ -1900,6 +2002,7 @@ async def skiptime(interaction: discord.Interaction, days: int = 1):
     career["work_days"] += days
     update_career(interaction.user.id, "work_days", career["work_days"])
 
+    # Track skipped days in economy data
     user_data = get_user_data(interaction.user.id)
     user_data["time_skipped"] = user_data.get("time_skipped", 0) + days
     data = load_economy()
@@ -1913,19 +2016,20 @@ async def skiptime(interaction: discord.Interaction, days: int = 1):
         update_career(interaction.user.id, "job_level", career["job_level"])
         new_job = get_job_info(career["job_level"])
         embed = _base_embed(
-            "📈 PROMOTION!",
-            f"You skipped **{days}** day(s) for **${total_cost:,}** and got promoted!\n\n"
-            f"🎉 New job: **{new_job['name']}**\n"
+            "📈  PROMOTION!",
+            f"You skipped **{days}** day(s) for **${total_cost:,}** and earned a promotion!\n\n"
+            f"🎉 New job: **{new_job['job']}**\n"
+            f"🏠 New home: **{new_job['house']}** _(rent: ${new_job['rent']:,}/day)_\n"
             f"💵 Balance: **${new_bal:,}**",
             C.CASINO,
         )
     else:
-        days_left = promotions.get(career["job_level"], 0) - career["work_days"]
+        days_left = max(0, PROMOTION_THRESHOLDS[level] - career["work_days"])
         embed = _base_embed(
             "⏩  Time Skipped!",
             f"You skipped **{days}** day(s) for **${total_cost:,}**!\n\n"
             f"📊 Work Days: **{career['work_days']}**\n"
-            f"📅 Days until promotion: **{max(0, days_left)}**\n"
+            f"📅 Days until promotion: **{days_left}**\n"
             f"💵 Balance: **${new_bal:,}**",
             C.SUCCESS,
         )
