@@ -5,7 +5,7 @@ import asyncio
 import os
 import random
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 # ── Config ──────────────────────────────────────────────────────────────────
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
@@ -49,7 +49,7 @@ def _base_embed(title, description=None, color=C.PRIMARY):
         title=title,
         description=description,
         color=color,
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(UTC)
     )
 
     embed.set_footer(
@@ -115,7 +115,7 @@ def can_claim_daily(user_id):
     if uid not in data or data[uid].get("daily") is None:
         return True, None
     last = datetime.fromisoformat(data[uid]["daily"])
-    remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.utcnow() - last)
+    remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.now(UTC) - last)
     if remaining.total_seconds() <= 0:
         return True, None
     return False, remaining
@@ -126,7 +126,7 @@ def claim_daily(user_id):
     if uid not in data:
         data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
     data[uid]["balance"] += DAILY_AMOUNT
-    data[uid]["daily"] = datetime.utcnow().isoformat()
+    data[uid]["daily"] = datetime.now(UTC).isoformat()
     save_economy(data)
     return data[uid]["balance"]
 
@@ -151,7 +151,7 @@ def _base_embed(title, description=None, color=C.PRIMARY):
         title=title,
         description=description,
         color=color,
-        timestamp=datetime.utcnow()
+        timestamp=datetime.now(UTC)
     )
 
     embed.set_footer(
@@ -457,7 +457,7 @@ async def ban(
             C.DANGER,
         )
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.timestamp = datetime.utcnow()
+        embed.timestamp = datetime.now(UTC)
         await interaction.response.send_message(embed=embed)
     except discord.Forbidden:
         await interaction.response.send_message(
@@ -483,7 +483,7 @@ async def unban(interaction: discord.Interaction, user_id: str, reason: str = "N
             f"> **User:** `{user}` (`{uid}`)\n> **Reason:** {reason}\n> **Moderator:** {interaction.user.mention}",
             C.SUCCESS,
         )
-        embed.timestamp = datetime.utcnow()
+        embed.timestamp = datetime.now(UTC)
         await interaction.response.send_message(embed=embed)
     except ValueError:
         await interaction.response.send_message(
@@ -527,7 +527,7 @@ async def kick(interaction: discord.Interaction, member: discord.Member, reason:
             C.WARNING,
         )
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.timestamp = datetime.utcnow()
+        embed.timestamp = datetime.now(UTC)
         await interaction.response.send_message(embed=embed)
     except discord.Forbidden:
         await interaction.response.send_message(
@@ -583,7 +583,7 @@ async def timeout_member(
             C.WARNING,
         )
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.timestamp = datetime.utcnow()
+        embed.timestamp = datetime.now(UTC)
         await interaction.response.send_message(embed=embed)
     except discord.Forbidden:
         await interaction.response.send_message(
@@ -612,7 +612,7 @@ async def untimeout_member(
             C.SUCCESS,
         )
         embed.set_thumbnail(url=member.display_avatar.url)
-        embed.timestamp = datetime.utcnow()
+        embed.timestamp = datetime.now(UTC)
         await interaction.response.send_message(embed=embed)
     except discord.Forbidden:
         await interaction.response.send_message(
@@ -638,7 +638,7 @@ async def warn(interaction: discord.Interaction, member: discord.Member, reason:
     WARNINGS.setdefault(key, []).append({
         "reason": reason,
         "mod": str(interaction.user),
-        "time": datetime.utcnow().isoformat(),
+        "time": datetime.now(UTC).isoformat(),
     })
     count = len(WARNINGS[key])
 
@@ -648,7 +648,7 @@ async def warn(interaction: discord.Interaction, member: discord.Member, reason:
         C.WARNING,
     )
     embed.set_thumbnail(url=member.display_avatar.url)
-    embed.timestamp = datetime.utcnow()
+    embed.timestamp = datetime.now(UTC)
     await interaction.response.send_message(embed=embed)
 
     try:
@@ -768,7 +768,7 @@ async def lock(interaction: discord.Interaction, channel: discord.TextChannel = 
     overwrite.send_messages = False
     await ch.edit(overwrites={interaction.guild.default_role: overwrite}, reason=reason)
     embed = _base_embed("🔒  Channel Locked", f"{ch.mention} has been locked.\n> **Reason:** {reason}", C.DANGER)
-    embed.timestamp = datetime.utcnow()
+    embed.timestamp = datetime.now(UTC)
     await interaction.response.send_message(embed=embed)
 
 @tree.command(name="unlock", description="Unlock a previously locked channel.")
@@ -785,7 +785,7 @@ async def unlock(interaction: discord.Interaction, channel: discord.TextChannel 
     overwrite.send_messages = None
     await ch.edit(overwrites={interaction.guild.default_role: overwrite}, reason=reason)
     embed = _base_embed("🔓  Channel Unlocked", f"{ch.mention} is now open.\n> **Reason:** {reason}", C.SUCCESS)
-    embed.timestamp = datetime.utcnow()
+    embed.timestamp = datetime.now(UTC)
     await interaction.response.send_message(embed=embed)
 
 # ── /userinfo ─────────────────────────────────────────────────────────────────
@@ -810,7 +810,7 @@ async def userinfo(interaction: discord.Interaction, member: discord.Member = No
         value=" ".join(roles[:10]) + (" ..." if len(roles) > 10 else "") if roles else "None",
         inline=False,
     )
-    embed.timestamp = datetime.utcnow()
+    embed.timestamp = datetime.now(UTC)
     await interaction.response.send_message(embed=embed)
 
 # ── /serverinfo ───────────────────────────────────────────────────────────────
@@ -827,7 +827,7 @@ async def serverinfo(interaction: discord.Interaction):
     embed.add_field(name="Boost Level",  value=f"**{g.premium_tier}** ({g.premium_subscription_count} boosts)", inline=True)
     embed.add_field(name="Created",      value=f"<t:{int(g.created_at.timestamp())}:R>",             inline=True)
     embed.add_field(name="Server ID",    value=f"`{g.id}`",                                         inline=False)
-    embed.timestamp = datetime.utcnow()
+    embed.timestamp = datetime.now(UTC)
     await interaction.response.send_message(embed=embed)
 
 # ── /mod_help ─────────────────────────────────────────────────────────────────
