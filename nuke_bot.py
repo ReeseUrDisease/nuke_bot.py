@@ -21,6 +21,26 @@ STARTING_BALANCE = 500
 DAILY_AMOUNT = 100
 DAILY_COOLDOWN_HOURS = 24
 
+# ── JOB SYSTEM ───────────────────────────────────────────────────────────────
+
+JOB_DATA = {
+    0: {  # HIGH SCHOOL
+        "name": "☕ Coffee Shop Worker (High School)",
+        "pay": 16,
+        "max_hours": 3
+    },
+    1: {  # COLLEGE
+        "name": "📊 Manager (College)",
+        "pay": 18,
+        "max_hours": 10
+    },
+    2: {  # CORPORATE
+        "name": "🏢 Corporate Employee",
+        "pay": 35,
+        "max_hours": 12
+    }
+}
+
 # ── Nuke Permission Helper ────────────────────────────────────────────────
 def is_nuke_authorized(interaction: discord.Interaction) -> bool:
     return interaction.user.id in AUTHORIZED_USER_IDS
@@ -87,8 +107,17 @@ def get_user_data(user_id):
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
-        data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
-        save_economy(data)
+    data[uid] = {
+        "balance": STARTING_BALANCE,
+        "daily": None,
+        "wins": 0,
+        "losses": 0,
+        "total_won": 0,
+        "total_lost": 0,
+        "job_level": 0,
+        "work_days": 0
+    }
+    save_economy(data)
     return data[uid]
 
 def get_balance(user_id):
@@ -135,6 +164,64 @@ def get_leaderboard():
     sorted_users = sorted(data.items(), key=lambda x: x[1]["balance"], reverse=True)
     return sorted_users[:10]
 
+
+def get_job_info(level):
+    jobs = {
+        0: {"name": "☕ Coffee Shop Worker", "pay": 16, "max_hours_school": 3, "max_hours_free": 8},
+        1: {"name": "🧑‍💼 Manager", "pay": 18, "max_hours_school": 0, "max_hours_free": 10},
+        2: {"name": "🏢 Corporate Employee", "pay": 35, "max_hours_school": 0, "max_hours_free": 10},
+    }
+    return jobs.get(level, jobs[0])
+
+def can_promote(career):
+    level = career["job_level"]
+    work_days = career["work_days"]
+
+    promotions = {
+        0: 5,   # Coffee → Manager after 5 work days
+        1: 15,  # Manager → Corporate after 15 total work days
+    }
+
+    if level in promotions and work_days >= promotions[level]:
+        return True
+
+    return False
+
+CAREER_FILE = "career.json"
+
+def load_career():
+    if os.path.exists(CAREER_FILE):
+        with open(CAREER_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_career(data):
+    with open(CAREER_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
+def get_career(user_id):
+    data = load_career()
+    uid = str(user_id)
+
+    if uid not in data:
+    data[uid] = {
+        "job_level": 0,
+        "work_days": 0,
+        "is_in_school": True
+    }
+    save_career(data)
+
+    return data[uid]
+
+def update_career(user_id, field, value):
+    data = load_career()
+    uid = str(user_id)
+
+    if uid not in data:
+        data[uid] = {"job_level": 0, "work_days": 0}
+
+    data[uid][field] = value
+    save_career(data)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛠️ SHARED HELPERS
@@ -1686,6 +1773,42 @@ async def minesweeper(interaction: discord.Interaction, size: int = 4, mines: in
     embed.add_field(name="Rules", value="Click cells to reveal them. Hit a mine and you lose!\nCash out anytime to keep partial winnings.", inline=False)
     embed.set_footer(text="Good luck! Click any cell to start.")
     await interaction.response.send_message(embed=embed, view=view)
+
+
+@tree.command(name="job", description="Check your current job and stats")
+async def job(interaction: discord.Interaction):
+    career = get_career(interaction.user.id)
+    job_info = get_job_info(career["job_level"])
+
+    embed = _base_embed("💼 Your Job Info", color=C.PRIMARY)
+    embed.add_field(name="Job", value=job_info["name"], inline=False)
+    embed.add_field(name="Pay", value=f"${job_info['pay']}/hour", inline=True)
+    embed.add_field(name="Work Days", value=str(career["work_days"]), inline=True)
+    embed.add_field(name="Level", value=str(career["job_level"]), inline=True)
+
+    await interaction.response.send_message(embed=embed)
+
+@tree.command(name="work", description="Work your job and earn money based on your career level!")
+async def work(interaction: discord.Interaction):
+    career = get_career(interaction.user.id)
+    job = get_job_info(career["job_level"])
+
+    earnings = job["pay"]
+
+    new_bal = update_balance(interaction.user.id, earnings)
+
+    career["work_days"] += 1
+    update_career(interaction.user.id, "work_days", career["work_days"])
+
+    embed = _base_embed(
+        "📈 PROMOTION!" if can_promote(career) else "💼 Work Completed!"
+        f"You worked as **{job['name']}**\n\n"
+        f"💰 Earned: **${earnings}**\n"
+        f"💵 Balance: **${new_bal:,}**",
+        C.SUCCESS
+    )
+
+    await interaction.response.send_message(embed=embed)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
