@@ -107,17 +107,17 @@ def get_user_data(user_id):
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
-    data[uid] = {
-        "balance": STARTING_BALANCE,
-        "daily": None,
-        "wins": 0,
-        "losses": 0,
-        "total_won": 0,
-        "total_lost": 0,
-        "job_level": 0,
-        "work_days": 0
-    }
-    save_economy(data)
+        data[uid] = {
+            "balance": STARTING_BALANCE,
+            "daily": None,
+            "wins": 0,
+            "losses": 0,
+            "total_won": 0,
+            "total_lost": 0,
+            "job_level": 0,
+            "work_days": 0
+        }
+        save_economy(data)
     return data[uid]
 
 def get_balance(user_id):
@@ -204,12 +204,12 @@ def get_career(user_id):
     uid = str(user_id)
 
     if uid not in data:
-    data[uid] = {
-        "job_level": 0,
-        "work_days": 0,
-        "is_in_school": True
-    }
-    save_career(data)
+        data[uid] = {
+            "job_level": 0,
+            "work_days": 0,
+            "is_in_school": True
+        }
+        save_career(data)
 
     return data[uid]
 
@@ -1801,7 +1801,7 @@ async def work(interaction: discord.Interaction):
     update_career(interaction.user.id, "work_days", career["work_days"])
 
     embed = _base_embed(
-        "📈 PROMOTION!" if can_promote(career) else "💼 Work Completed!"
+        "📈 PROMOTION!" if can_promote(career) else "💼 Work Completed!",
         f"You worked as **{job['name']}**\n\n"
         f"💰 Earned: **${earnings}**\n"
         f"💵 Balance: **${new_bal:,}**",
