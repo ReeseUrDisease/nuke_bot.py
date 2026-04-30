@@ -41,8 +41,8 @@ class C:
 # ✨ AESTHETIC UI SYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
 
-BOT_FOOTER = " ⚡ Powered by ClvrLabs 🍀 • Advanced Utility Bot"
-BOT_THUMBNAIL = "https://cf.preview.redd.it/ao8zubrishxc1.jpg?width=609&format=pjpg&auto=webp&s=06dbac6a822e3ec36c8ff5deddc8c76c2e02806a"  # replace with your own image if wanted
+BOT_FOOTER = " ⚡ Powered by HYDRA SYSTEM • Advanced Utility Bot"
+BOT_THUMBNAIL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"  # replace with your own image if wanted
 
 def _base_embed(title, description=None, color=C.PRIMARY):
     embed = discord.Embed(
@@ -54,7 +54,7 @@ def _base_embed(title, description=None, color=C.PRIMARY):
 
     embed.set_footer(
         text=BOT_FOOTER,
-        icon_url="https://cdn.discordapp.com/emojis/1066843307204923402.webp"
+        icon_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"
     )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
@@ -143,8 +143,8 @@ def get_leaderboard():
 # ✨ AESTHETIC UI SYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
 
-BOT_FOOTER = "⚡ Powered by ClvrLabs 🍀 • Advanced Utility Bot"
-BOT_THUMBNAIL = "https://pbs.twimg.com/profile_images/1607144753153572864/aUUjpJOD_400x400.jpg"  # replace with your own image if wanted
+BOT_FOOTER = "⚡ Powered by HYDRA SYSTEM • Advanced Utility Bot"
+BOT_THUMBNAIL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"  # replace with your own image if wanted
 
 def _base_embed(title, description=None, color=C.PRIMARY):
     embed = discord.Embed(
@@ -156,7 +156,7 @@ def _base_embed(title, description=None, color=C.PRIMARY):
 
     embed.set_footer(
         text=BOT_FOOTER,
-        icon_url="https://i.pinimg.com/736x/13/46/1a/13461a1b67466ef216cfb8f36a3c32af.jpg"
+        icon_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"
     )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
