@@ -20,6 +20,7 @@ ECONOMY_FILE = "economy.json"
 STARTING_BALANCE = 500
 DAILY_AMOUNT = 100
 DAILY_COOLDOWN_HOURS = 24
+WORK_COOLDOWN_HOURS = 1
 
 # ── JOB SYSTEM ───────────────────────────────────────────────────────────────
 
@@ -115,7 +116,8 @@ def get_user_data(user_id):
             "total_won": 0,
             "total_lost": 0,
             "job_level": 0,
-            "work_days": 0
+            "work_days": 0,
+            "time_skipped": 0
         }
         save_economy(data)
     return data[uid]
@@ -127,7 +129,17 @@ def update_balance(user_id, amount):
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
-        data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
+        data[uid] = {
+            "balance": STARTING_BALANCE,
+            "daily": None,
+            "wins": 0,
+            "losses": 0,
+            "total_won": 0,
+            "total_lost": 0,
+            "job_level": 0,
+            "work_days": 0,
+            "time_skipped": 0
+        }
     data[uid]["balance"] += amount
     if amount > 0:
         data[uid]["wins"] = data[uid].get("wins", 0) + 1
@@ -153,7 +165,17 @@ def claim_daily(user_id):
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
-        data[uid] = {"balance": STARTING_BALANCE, "daily": None, "wins": 0, "losses": 0, "total_won": 0, "total_lost": 0}
+        data[uid] = {
+            "balance": STARTING_BALANCE,
+            "daily": None,
+            "wins": 0,
+            "losses": 0,
+            "total_won": 0,
+            "total_lost": 0,
+            "job_level": 0,
+            "work_days": 0,
+            "time_skipped": 0
+        }
     data[uid]["balance"] += DAILY_AMOUNT
     data[uid]["daily"] = datetime.now(UTC).isoformat()
     save_economy(data)
@@ -226,29 +248,6 @@ def update_career(user_id, field, value):
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛠️ SHARED HELPERS
 # ══════════════════════════════════════════════════════════════════════════════
-# ══════════════════════════════════════════════════════════════════════════════
-# ✨ AESTHETIC UI SYSTEM
-# ══════════════════════════════════════════════════════════════════════════════
-
-BOT_FOOTER = "⚡ Powered by HYDRA SYSTEM • Advanced Utility Bot"
-BOT_THUMBNAIL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"  # replace with your own image if wanted
-
-def _base_embed(title, description=None, color=C.PRIMARY):
-    embed = discord.Embed(
-        title=title,
-        description=description,
-        color=color,
-        timestamp=datetime.now(UTC)
-    )
-
-    embed.set_footer(
-        text=BOT_FOOTER,
-        icon_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"
-    )
-
-    embed.set_thumbnail(url=BOT_THUMBNAIL)
-
-    return embed
 
 async def confirm(ctx, action: str) -> bool:
     embed = _base_embed(
@@ -707,7 +706,17 @@ async def untimeout_member(
         )
 
 # ── /warn ─────────────────────────────────────────────────────────────────────
-WARNINGS: dict[str, list[dict]] = {}   # { "guild_id:user_id": [{reason, mod, time}] }
+WARNINGS_FILE = "warnings.json"
+
+def load_warnings():
+    if os.path.exists(WARNINGS_FILE):
+        with open(WARNINGS_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_warnings(data):
+    with open(WARNINGS_FILE, "w") as f:
+        json.dump(data, f, indent=2)
 
 def _warn_key(guild_id, user_id):
     return f"{guild_id}:{user_id}"
@@ -721,13 +730,15 @@ async def warn(interaction: discord.Interaction, member: discord.Member, reason:
             ephemeral=True,
         )
         return
+    warnings = load_warnings()
     key = _warn_key(interaction.guild_id, member.id)
-    WARNINGS.setdefault(key, []).append({
+    warnings.setdefault(key, []).append({
         "reason": reason,
         "mod": str(interaction.user),
         "time": datetime.now(UTC).isoformat(),
     })
-    count = len(WARNINGS[key])
+    save_warnings(warnings)
+    count = len(warnings[key])
 
     embed = _base_embed(
         "⚠️  Warning Issued",
@@ -758,8 +769,9 @@ async def warnings(interaction: discord.Interaction, member: discord.Member):
             ephemeral=True,
         )
         return
+    warnings = load_warnings()
     key = _warn_key(interaction.guild_id, member.id)
-    user_warns = WARNINGS.get(key, [])
+    user_warns = warnings.get(key, [])
     if not user_warns:
         await interaction.response.send_message(
             embed=_base_embed("✅  No Warnings", f"{member.mention} has a clean record.", C.SUCCESS)
@@ -788,8 +800,10 @@ async def clearwarnings(interaction: discord.Interaction, member: discord.Member
             ephemeral=True,
         )
         return
+    warnings = load_warnings()
     key = _warn_key(interaction.guild_id, member.id)
-    WARNINGS.pop(key, None)
+    warnings.pop(key, None)
+    save_warnings(warnings)
     await interaction.response.send_message(
         embed=_base_embed("🗑️  Warnings Cleared", f"All warnings for {member.mention} have been removed.", C.SUCCESS)
     )
@@ -881,8 +895,9 @@ async def unlock(interaction: discord.Interaction, channel: discord.TextChannel 
 async def userinfo(interaction: discord.Interaction, member: discord.Member = None):
     member = member or interaction.user
     roles = [r.mention for r in reversed(member.roles) if not r.is_default()]
+    warnings = load_warnings()
     key = _warn_key(interaction.guild_id, member.id)
-    warn_count = len(WARNINGS.get(key, []))
+    warn_count = len(warnings.get(key, []))
 
     embed = _base_embed(f"👤  {member.display_name}", color=member.color if member.color.value else C.PRIMARY)
     embed.set_thumbnail(url=member.display_avatar.url)
@@ -1791,22 +1806,49 @@ async def job(interaction: discord.Interaction):
 @tree.command(name="work", description="Work your job and earn money based on your career level!")
 async def work(interaction: discord.Interaction):
     career = get_career(interaction.user.id)
+
+    last_work = career.get("last_work")
+    if last_work:
+        last = datetime.fromisoformat(last_work)
+        remaining = timedelta(hours=WORK_COOLDOWN_HOURS) - (datetime.now(UTC) - last)
+        if remaining.total_seconds() > 0:
+            minutes = int(remaining.total_seconds()) // 60
+            embed = _base_embed(
+                "⏱️  Work Cooldown",
+                f"You need to rest! Come back in **{minutes}m**.",
+                C.DANGER,
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
     job = get_job_info(career["job_level"])
-
     earnings = job["pay"]
-
     new_bal = update_balance(interaction.user.id, earnings)
 
     career["work_days"] += 1
     update_career(interaction.user.id, "work_days", career["work_days"])
+    update_career(interaction.user.id, "last_work", datetime.now(UTC).isoformat())
 
-    embed = _base_embed(
-        "📈 PROMOTION!" if can_promote(career) else "💼 Work Completed!",
-        f"You worked as **{job['name']}**\n\n"
-        f"💰 Earned: **${earnings}**\n"
-        f"💵 Balance: **${new_bal:,}**",
-        C.SUCCESS
-    )
+    if can_promote(career):
+        career["job_level"] += 1
+        update_career(interaction.user.id, "job_level", career["job_level"])
+        new_job = get_job_info(career["job_level"])
+        embed = _base_embed(
+            "📈 PROMOTION!",
+            f"You worked as **{job['name']}** and got promoted!\n\n"
+            f"🎉 New job: **{new_job['name']}**\n"
+            f"💰 Earned: **${earnings}**\n"
+            f"💵 Balance: **${new_bal:,}**",
+            C.CASINO
+        )
+    else:
+        embed = _base_embed(
+            "💼 Work Completed!",
+            f"You worked as **{job['name']}**\n\n"
+            f"💰 Earned: **${earnings}**\n"
+            f"💵 Balance: **${new_bal:,}**",
+            C.SUCCESS
+        )
 
     await interaction.response.send_message(embed=embed)
 
