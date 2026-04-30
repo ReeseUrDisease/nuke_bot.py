@@ -1853,6 +1853,85 @@ async def work(interaction: discord.Interaction):
 
     await interaction.response.send_message(embed=embed)
 
+SKIP_COST_PER_DAY = 200
+
+@tree.command(name="skiptime", description="Spend money to skip work days and promote faster!")
+@app_commands.describe(days="Number of work days to skip (default: 1)")
+async def skiptime(interaction: discord.Interaction, days: int = 1):
+    if days <= 0:
+        await interaction.response.send_message(
+            embed=_base_embed("❌  Error", "You must skip at least 1 day!", C.DANGER), ephemeral=True
+        )
+        return
+
+    career = get_career(interaction.user.id)
+
+    if career["job_level"] >= 2:
+        await interaction.response.send_message(
+            embed=_base_embed("🏢  Max Level", "You're already at the highest job level!", C.PRIMARY), ephemeral=True
+        )
+        return
+
+    promotions = {0: 5, 1: 15}
+    days_needed = promotions[career["job_level"]] - career["work_days"]
+    if days_needed <= 0:
+        days_needed = 0
+
+    if days > days_needed and days_needed > 0:
+        days = days_needed
+
+    total_cost = SKIP_COST_PER_DAY * days
+    bal = get_balance(interaction.user.id)
+
+    if total_cost > bal:
+        affordable = bal // SKIP_COST_PER_DAY
+        await interaction.response.send_message(
+            embed=_base_embed(
+                "❌  Insufficient Funds",
+                f"Skipping **{days}** day(s) costs **${total_cost:,}** but you only have **${bal:,}**.\n"
+                f"You can afford **{affordable}** day(s) at **${SKIP_COST_PER_DAY}**/day.",
+                C.DANGER,
+            ),
+            ephemeral=True,
+        )
+        return
+
+    update_balance(interaction.user.id, -total_cost)
+    career["work_days"] += days
+    update_career(interaction.user.id, "work_days", career["work_days"])
+
+    user_data = get_user_data(interaction.user.id)
+    user_data["time_skipped"] = user_data.get("time_skipped", 0) + days
+    data = load_economy()
+    data[str(interaction.user.id)] = user_data
+    save_economy(data)
+
+    new_bal = get_balance(interaction.user.id)
+
+    if can_promote(career):
+        career["job_level"] += 1
+        update_career(interaction.user.id, "job_level", career["job_level"])
+        new_job = get_job_info(career["job_level"])
+        embed = _base_embed(
+            "📈 PROMOTION!",
+            f"You skipped **{days}** day(s) for **${total_cost:,}** and got promoted!\n\n"
+            f"🎉 New job: **{new_job['name']}**\n"
+            f"💵 Balance: **${new_bal:,}**",
+            C.CASINO,
+        )
+    else:
+        days_left = promotions.get(career["job_level"], 0) - career["work_days"]
+        embed = _base_embed(
+            "⏩  Time Skipped!",
+            f"You skipped **{days}** day(s) for **${total_cost:,}**!\n\n"
+            f"📊 Work Days: **{career['work_days']}**\n"
+            f"📅 Days until promotion: **{max(0, days_left)}**\n"
+            f"💵 Balance: **${new_bal:,}**",
+            C.SUCCESS,
+        )
+
+    await interaction.response.send_message(embed=embed)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛡️ ERROR HANDLING & STARTUP
