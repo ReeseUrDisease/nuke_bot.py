@@ -240,13 +240,13 @@ JOB_ECONOMY = {
 
 # Work days required to be eligible for promotion AT each level (before moving to next)
 PROMOTION_THRESHOLDS = {
-    0: 5,    # Level 0 → 1 after 5 work days
-    1: 10,   # Level 1 → 2 after 10 work days
-    2: 20,   # Level 2 → 3 after 20 work days
-    3: 35,   # Level 3 → 4 after 35 work days
-    4: 55,   # Level 4 → 5 after 55 work days
-    5: 80,   # Level 5 → 6 after 80 work days
-    6: 110,  # Level 6 → 7 after 110 work days
+    0: 5,    # Level 0 → 1 after 25 work days
+    1: 10,   # Level 1 → 2 after 75 work days
+    2: 20,   # Level 2 → 3 after 150 work days
+    3: 35,   # Level 3 → 4 after 300 work days
+    4: 55,   # Level 4 → 5 after 600 work days
+    5: 80,   # Level 5 → 6 after 950 work days
+    6: 110,  # Level 6 → 7 after 1500 work days
     # Level 7 is max — no further promotion
 }
 
