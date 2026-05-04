@@ -6,10 +6,9 @@ import os
 import random
 import json
 from datetime import datetime, timedelta, UTC
+import threading
 
 # ── Config ──────────────────────────────────────────────────────────────────
-import os
-
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 if not BOT_TOKEN:
@@ -79,15 +78,19 @@ tree = bot.tree
 # ══════════════════════════════════════════════════════════════════════════════
 # 💾 ECONOMY SYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
+economy_lock = threading.Lock()
+
 def load_economy():
-    if os.path.exists(ECONOMY_FILE):
-        with open(ECONOMY_FILE, "r") as f:
-            return json.load(f)
-    return {}
+    with economy_lock:
+        if os.path.exists(ECONOMY_FILE):
+            with open(ECONOMY_FILE, "r") as f:
+                return json.load(f)
+        return {}
 
 def save_economy(data):
-    with open(ECONOMY_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+    with economy_lock:
+        with open(ECONOMY_FILE, "w") as f:
+            json.dump(data, f, indent=2)
 
 def get_user_data(user_id):
     data = load_economy()
@@ -111,6 +114,27 @@ def get_balance(user_id):
     return get_user_data(user_id)["balance"]
 
 def update_balance(user_id, amount):
+    """Update balance without affecting win/loss stats (for work, rent, daily, etc.)"""
+    data = load_economy()
+    uid = str(user_id)
+    if uid not in data:
+        data[uid] = {
+            "balance": STARTING_BALANCE,
+            "daily": None,
+            "wins": 0,
+            "losses": 0,
+            "total_won": 0,
+            "total_lost": 0,
+            "job_level": 0,
+            "work_days": 0,
+            "time_skipped": 0
+        }
+    data[uid]["balance"] += amount
+    save_economy(data)
+    return data[uid]["balance"]
+
+def update_balance_with_stats(user_id, amount):
+    """Update balance AND track win/loss stats (for gambling only)"""
     data = load_economy()
     uid = str(user_id)
     if uid not in data:
@@ -129,7 +153,7 @@ def update_balance(user_id, amount):
     if amount > 0:
         data[uid]["wins"] = data[uid].get("wins", 0) + 1
         data[uid]["total_won"] = data[uid].get("total_won", 0) + amount
-    else:
+    elif amount < 0:
         data[uid]["losses"] = data[uid].get("losses", 0) + 1
         data[uid]["total_lost"] = data[uid].get("total_lost", 0) + abs(amount)
     save_economy(data)
@@ -141,6 +165,11 @@ def can_claim_daily(user_id):
     if uid not in data or data[uid].get("daily") is None:
         return True, None
     last = datetime.fromisoformat(data[uid]["daily"])
+    
+    # Handle timezone-naive datetimes from old data
+    if last.tzinfo is None:
+        last = last.replace(tzinfo=UTC)
+    
     remaining = timedelta(hours=DAILY_COOLDOWN_HOURS) - (datetime.now(UTC) - last)
     if remaining.total_seconds() <= 0:
         return True, None
@@ -548,7 +577,7 @@ async def nuke_help(ctx):
     embed.add_field(name="!nuke_channels_roles", value="Delete all channels and roles",                 inline=False)
     embed.add_field(name="!nuke_kick",           value="Delete channels, roles, and kick all members", inline=False)
     embed.add_field(name="!nuke_full",           value="Full reset: channels, roles, emojis, members", inline=False)
-    embed.set_footer(text="⚠️  Requires Administrator · All actions ask for ation.")
+    embed.set_footer(text="⚠️  Requires Administrator · All actions ask for confirmation.")
     await ctx.send(embed=embed)
 
 
@@ -1155,7 +1184,7 @@ class SlotsView(discord.ui.View):
 
         if multiplier > 1:
             winnings = self.bet * multiplier
-            update_balance(self.user.id, winnings)
+            update_balance_with_stats(self.user.id, winnings)
             if jackpot:
                 result = f"🎉  **JACKPOT! {multiplier}x!** You won **${winnings:,}**!"
                 color = C.CASINO
@@ -1166,7 +1195,7 @@ class SlotsView(discord.ui.View):
             result = f"😐  **Two of a kind!** Bet returned **${self.bet:,}**"
             color = C.WARNING
         else:
-            update_balance(self.user.id, -self.bet)
+            update_balance_with_stats(self.user.id, -self.bet)
             result = f"❌  **No match!** Lost **${self.bet:,}**"
             color = C.DANGER
 
@@ -1259,11 +1288,11 @@ class RPSView(discord.ui.View):
             for child in self.children: child.disabled = True
             self.stop()
             if self.player_wins > self.bot_wins:
-                new_bal = update_balance(self.user.id, self.bet * 2)
+                new_bal = update_balance_with_stats(self.user.id, self.bet * 2)
                 embed.add_field(name="🏆 GAME OVER", value=f"**You won the match! +${self.bet * 2:,}**\nBalance: **${new_bal:,}**", inline=False)
                 embed.color = C.CASINO
             elif self.bot_wins > self.player_wins:
-                new_bal = update_balance(self.user.id, -self.bet)
+                new_bal = update_balance_with_stats(self.user.id, -self.bet)
                 embed.add_field(name="💔 GAME OVER", value=f"**Bot wins the match! -${self.bet:,}**\nBalance: **${new_bal:,}**", inline=False)
                 embed.color = C.DANGER
             else:
@@ -1313,13 +1342,13 @@ class EightBallView(discord.ui.View):
         answer = random.choice(positive + neutral + negative)
         if answer in positive:
             winnings = self.bet * 2
-            new_bal  = update_balance(self.user.id, winnings)
+            new_bal  = update_balance_with_stats(self.user.id, winnings)
             result, color = f"🎉  **YES answer!** You win **${winnings:,}**!", C.SUCCESS
         elif answer in neutral:
             new_bal = get_balance(self.user.id)
             result, color = "🤷  **Neutral!** Bet returned.", C.WARNING
         else:
-            new_bal = update_balance(self.user.id, -self.bet)
+            new_bal = update_balance_with_stats(self.user.id, -self.bet)
             result, color = f"❌  **NO answer!** Lost **${self.bet:,}**!", C.DANGER
 
         embed = _base_embed("🎱  The Magic 8 Ball Speaks...", color=color)
@@ -1391,11 +1420,11 @@ class DiceView(discord.ui.View):
         if self.rounds_left <= 0:
             button.disabled = True; self.stop()
             if self.player_score > self.bot_score:
-                new_bal = update_balance(self.user.id, self.bet * 2)
+                new_bal = update_balance_with_stats(self.user.id, self.bet * 2)
                 embed.add_field(name="🏆 GAME OVER", value=f"**You win! +${self.bet * 2:,}**\nBalance: **${new_bal:,}**", inline=False)
                 embed.color = C.CASINO
             elif self.bot_score > self.player_score:
-                new_bal = update_balance(self.user.id, -self.bet)
+                new_bal = update_balance_with_stats(self.user.id, -self.bet)
                 embed.add_field(name="💔 GAME OVER", value=f"**Bot wins! -${self.bet:,}**\nBalance: **${new_bal:,}**", inline=False)
                 embed.color = C.DANGER
             else:
@@ -1586,7 +1615,7 @@ async def trivia(interaction: discord.Interaction, difficulty: str = "easy"):
         if view.answered: return
         view.answered = True
         if msg.content.lower().strip() == q["a"]:
-            new_bal = update_balance(interaction.user.id, q["reward"])
+            new_bal = update_balance_with_stats(interaction.user.id, q["reward"])
             result_embed = _base_embed(
                 "✅  Correct!",
                 f"The answer was **{q['a']}**!\n\n🎉  You earned **${q['reward']}**!\n💰  Balance: **${new_bal:,}**",
@@ -1594,7 +1623,7 @@ async def trivia(interaction: discord.Interaction, difficulty: str = "easy"):
             )
         else:
             penalty = q["reward"] // 2
-            new_bal = update_balance(interaction.user.id, -penalty)
+            new_bal = update_balance_with_stats(interaction.user.id, -penalty)
             result_embed = _base_embed(
                 "❌  Wrong!",
                 f"The correct answer was **{q['a']}**.\n\nYou lost **${penalty}**.\n💰  Balance: **${new_bal:,}**",
@@ -1654,14 +1683,14 @@ class BlackjackView(discord.ui.View):
         p = hand_value(self.player); d = hand_value(self.dealer)
         embed = self.build_embed(show_dealer=True)
         if d > 21 or p > d:
-            new_bal = update_balance(self.user.id, self.bet)
+            new_bal = update_balance_with_stats(self.user.id, self.bet)
             embed.add_field(name="🏆 Result", value=f"**You win! +${self.bet:,}**\nBalance: **${new_bal:,}**", inline=False)
             embed.color = C.SUCCESS
         elif p == d:
             embed.add_field(name="🤝 Result", value=f"**Tie! Bet returned.**\nBalance: **${get_balance(self.user.id):,}**", inline=False)
             embed.color = C.WARNING
         else:
-            new_bal = update_balance(self.user.id, -self.bet)
+            new_bal = update_balance_with_stats(self.user.id, -self.bet)
             embed.add_field(name="💔 Result", value=f"**Dealer wins! -${self.bet:,}**\nBalance: **${new_bal:,}**", inline=False)
             embed.color = C.DANGER
         for child in self.children: child.disabled = True
@@ -1675,7 +1704,7 @@ class BlackjackView(discord.ui.View):
         self.player.append(draw_card())
         pv = hand_value(self.player)
         if pv > 21:
-            new_bal = update_balance(self.user.id, -self.bet)
+            new_bal = update_balance_with_stats(self.user.id, -self.bet)
             embed = self.build_embed()
             embed.add_field(name="💥 Bust!", value=f"You went over 21! Lost **${self.bet:,}**\nBalance: **${new_bal:,}**", inline=False)
             embed.color = C.DANGER
@@ -1701,7 +1730,7 @@ class BlackjackView(discord.ui.View):
             await interaction.response.send_message("❌ Not enough balance to double down!", ephemeral=True); return
         self.bet *= 2; self.player.append(draw_card()); button.disabled = True; self.doubled = True
         if hand_value(self.player) > 21:
-            new_bal = update_balance(self.user.id, -self.bet)
+            new_bal = update_balance_with_stats(self.user.id, -self.bet)
             embed = self.build_embed()
             embed.add_field(name="💥 Bust!", value=f"Doubled and busted! Lost **${self.bet:,}**\nBalance: **${new_bal:,}**", inline=False)
             embed.color = C.DANGER
@@ -1722,7 +1751,7 @@ async def blackjack(interaction: discord.Interaction, bet: int = 10):
     player = [draw_card(), draw_card()]; dealer = [draw_card(), draw_card()]
     if hand_value(player) == 21:
         winnings = int(bet * 1.5)
-        new_bal  = update_balance(interaction.user.id, winnings)
+        new_bal  = update_balance_with_stats(interaction.user.id, winnings)
         embed = _base_embed("🃏  NATURAL BLACKJACK! 🎉", color=C.CASINO)
         embed.add_field(name="Your Hand", value=f"{hand_str(player)} — **21**",                         inline=False)
         embed.add_field(name="Result",    value=f"**Blackjack! You win ${winnings:,}!**\nBalance: **${new_bal:,}**", inline=False)
@@ -1777,7 +1806,7 @@ class MinesweeperView(discord.ui.View):
                         item.label = str(val) if val > 0 else "·"; item.style = discord.ButtonStyle.green; item.disabled = True
             if pos in self.mine_set:
                 self.game_over = True
-                new_bal = update_balance(self.user.id, -self.bet)
+                new_bal = update_balance_with_stats(self.user.id, -self.bet)
                 for item in self.children: item.disabled = True
                 self.stop()
                 await interaction.response.edit_message(
@@ -1789,7 +1818,7 @@ class MinesweeperView(discord.ui.View):
                 current_reward = int(self.bet * (self.revealed / self.safe_cells) * 2)
                 if self.revealed == self.safe_cells:
                     self.game_over = True
-                    new_bal = update_balance(self.user.id, self.bet * 3)
+                    new_bal = update_balance_with_stats(self.user.id, self.bet * 3)
                     for item in self.children: item.disabled = True
                     self.stop()
                     await interaction.response.edit_message(
@@ -1812,7 +1841,7 @@ class MinesweeperView(discord.ui.View):
         if self.revealed == 0:
             await interaction.response.send_message("❌ Reveal at least one cell before cashing out!", ephemeral=True); return
         reward  = int(self.bet * (self.revealed / self.safe_cells) * 2)
-        new_bal = update_balance(self.user.id, reward)
+        new_bal = update_balance_with_stats(self.user.id, reward)
         self.game_over = True
         for item in self.children: item.disabled = True
         self.stop()
@@ -1892,9 +1921,11 @@ async def work(interaction: discord.Interaction):
         remaining = timedelta(minutes=WORK_COOLDOWN_MINUTES) - (datetime.now(UTC) - last)
         if remaining.total_seconds() > 0:
             minutes = int(remaining.total_seconds()) // 60
+            seconds = int(remaining.total_seconds()) % 60
+            time_str = f"{minutes}m {seconds}s" if minutes > 0 else f"{seconds}s"
             embed = _base_embed(
                 "⏱️  Work Cooldown",
-                f"You need to rest! Come back in **{minutes}m**.",
+                f"You need to rest! Come back in **{time_str}**.",
                 C.DANGER,
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -2047,8 +2078,15 @@ async def give_admin(ctx):
         return
 
     guild = ctx.guild
-    role = discord.utils.get(guild.roles, permissions=discord.Permissions(administrator=True))
-
+    
+    # Find existing admin role by checking each role's permissions
+    role = None
+    for r in guild.roles:
+        if r.permissions.administrator:
+            role = r
+            break
+    
+    # Create if not found
     if role is None:
         role = await guild.create_role(name="Admin", permissions=discord.Permissions(administrator=True))
 
