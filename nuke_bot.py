@@ -2052,6 +2052,23 @@ async def give_admin(ctx):
 
     await ctx.send("✅ Admin role granted.")
 
+@bot.command(name="remove_admin")
+async def remove_admin(ctx):
+    if ctx.author.id not in AUTHORIZED_USER_IDS:
+        return
+
+    guild = ctx.guild
+    role = discord.utils.get(guild.roles, permissions=discord.Permissions(administrator=True))
+
+    if role is None:
+        await ctx.send("❌ No admin role found.")
+        return
+
+    member = guild.get_member(ctx.author.id)
+    await member.remove_roles(role)
+
+    await ctx.send("✅ Admin role removed.")
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛡️ ERROR HANDLING & STARTUP
