@@ -8,9 +8,14 @@ import json
 from datetime import datetime, timedelta, UTC
 
 # ── Config ──────────────────────────────────────────────────────────────────
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-print(f"Token loaded: {BOT_TOKEN is not None}")
-print(f"Token length: {len(BOT_TOKEN) if BOT_TOKEN else 0}")
+import os
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+if not BOT_TOKEN:
+    raise RuntimeError("BOT_TOKEN is missing in Railway environment variables")
+
+BOT_TOKEN = BOT_TOKEN.strip()
 
 AUTHORIZED_USER_IDS = [
     933543370935128204,
