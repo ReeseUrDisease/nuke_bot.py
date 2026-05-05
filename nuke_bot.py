@@ -2114,6 +2114,93 @@ async def remove_admin(ctx):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# ℹ️ ABOUT ME / BOT INFO
+# ══════════════════════════════════════════════════════════════════════════════
+@tree.command(name="aboutme", description="Learn about the bot and its creator!")
+async def aboutme(interaction: discord.Interaction):
+    embed = _base_embed("ℹ️  About HYDRA SYSTEM", color=C.PRIMARY)
+    
+    # Bot Information
+    embed.add_field(
+        name="🤖  About the Bot",
+        value=(
+            "**HYDRA SYSTEM** is a powerful Discord utility bot designed to "
+            "bring advanced server management, economy features, and fun games "
+            "all in one place!\n\n"
+            "From nuking servers to playing blackjack, HYDRA does it all. "
+            "Built with passion and precision to create the ultimate Discord experience."
+        ),
+        inline=False
+    )
+    
+    # Creator Information
+    embed.add_field(
+        name="👨‍💻  About the Creator",
+        value=(
+            "Created by **[Your Name Here]**\n\n"
+            "• Started coding in **[Year]**\n"
+            "• Passionate about **[Your Interests]**\n"
+            "• Building bots since **[Year]**\n\n"
+            "_\"[Your Quote or Mission Statement]\"_"
+        ),
+        inline=False
+    )
+    
+    # Origin Story
+    embed.add_field(
+        name="📖  The Origin Story",
+        value=(
+            "[Tell your story here! How did you start making Discord bots? "
+            "What inspired you to create HYDRA SYSTEM? What challenges did you face? "
+            "What are you most proud of?]\n\n"
+            "This bot represents **[X]** hours of development, countless late nights, "
+            "and a commitment to creating something truly special for the Discord community."
+        ),
+        inline=False
+    )
+    
+    # Features Highlight
+    embed.add_field(
+        name="⚡  Key Features",
+        value=(
+            "• **Server Management** — Nuke, mass actions, and moderation\n"
+            "• **Economy System** — Work, daily rewards, and career progression\n"
+            "• **Casino Games** — Slots, Blackjack, RPS, Dice, and more\n"
+            "• **Utility Commands** — DM all, spam channels, polls\n"
+            "• **Custom UI** — Beautiful embeds and interactive buttons"
+        ),
+        inline=False
+    )
+    
+    # Stats
+    embed.add_field(
+        name="📊  Bot Stats",
+        value=(
+            f"• Servers: **{len(bot.guilds)}**\n"
+            f"• Commands: **50+**\n"
+            f"• Uptime: **Online and Ready!**"
+        ),
+        inline=True
+    )
+    
+    # Links/Contact
+    embed.add_field(
+        name="🔗  Links",
+        value=(
+            "• Support Server: **[Add Link]**\n"
+            "• Invite Bot: **[Add Link]**\n"
+            "• GitHub: **[Add Link]**"
+        ),
+        inline=True
+    )
+    
+    embed.set_footer(text="Thank you for using HYDRA SYSTEM! ⚡")
+    embed.set_thumbnail(url=BOT_THUMBNAIL)
+    
+    await interaction.response.send_message(embed=embed)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # 🛡️ ERROR HANDLING & STARTUP
 # ══════════════════════════════════════════════════════════════════════════════
 @bot.event
