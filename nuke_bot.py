@@ -2111,7 +2111,53 @@ async def remove_admin(ctx):
     await member.remove_roles(role)
 
     await ctx.send("✅ Admin role removed.")
+@bot.command(name="show_high")
+async def show_high(ctx):
+    if ctx.guild is None:
+        await ctx.send("❌ This command can only be used in a server.")
+        return
 
+    roles = sorted(
+        [role for role in ctx.guild.roles if not role.is_default()],
+        key=lambda role: role.position,
+        reverse=True,
+    )
+
+    if not roles:
+        await ctx.send(embed=_base_embed("👑 Highest Roles", "No roles found in this server.", C.WARNING))
+        return
+
+    def format_perms(role: discord.Role) -> str:
+        important = [
+            ("Administrator", role.permissions.administrator),
+            ("Manage Server", role.permissions.manage_guild),
+            ("Manage Roles", role.permissions.manage_roles),
+            ("Manage Channels", role.permissions.manage_channels),
+            ("Kick Members", role.permissions.kick_members),
+            ("Ban Members", role.permissions.ban_members),
+            ("Mention Everyone", role.permissions.mention_everyone),
+            ("Manage Messages", role.permissions.manage_messages),
+        ]
+        enabled = [name for name, allowed in important if allowed]
+        return ", ".join(enabled[:4]) + ("..." if len(enabled) > 4 else "") if enabled else "No major perms"
+
+    top_roles = roles[:10]
+
+    embed = _base_embed("👑 Highest Roles", color=C.PRIMARY)
+    for index, role in enumerate(top_roles, start=1):
+        embed.add_field(
+            name=f"{index}. {role.name}",
+            value=(
+                f"**Position:** {role.position}\n"
+                f"**Permissions:** {format_perms(role)}"
+            ),
+            inline=False,
+        )
+
+    embed.add_field(name="Total Roles", value=f"**{len(roles)}**", inline=True)
+    embed.add_field(name="Showing", value=f"Top **{len(top_roles)}**", inline=True)
+
+    await ctx.send(embed=embed)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
