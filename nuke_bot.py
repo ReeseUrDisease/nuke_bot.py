@@ -2204,10 +2204,10 @@ embed.add_field(
     inline=True
 )
     
-    embed.set_footer(text="Thank you for using HYDRA SYSTEM! ⚡")
-    embed.set_thumbnail(url=BOT_THUMBNAIL)
+embed.set_footer(text="Thank you for using HYDRA SYSTEM! ⚡")
+embed.set_thumbnail(url=BOT_THUMBNAIL)
     
-    await interaction.response.send_message(embed=embed)
+await interaction.response.send_message(embed=embed)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
