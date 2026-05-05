@@ -2116,83 +2116,115 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
-@tree.command(name="aboutme", description="Learn about the bot and the people behind it.")
+@tree.command(name="aboutme", description="View HYDRA SYSTEM details.")
 async def aboutme(interaction: discord.Interaction):
-    embed = _base_embed(
-        "HYDRA SYSTEM",
+    embed = discord.Embed(
+        title="HYDRA SYSTEM // PROFILE",
         description=(
-            ">>> **A polished multi-purpose Discord system**\n"
-            "Built for clean utility, progression, and personality."
+            ">>> **Control. Economy. Games. Presence.**\n"
+            "Built for servers that want power without clutter, and style without noise."
         ),
         color=C.PRIMARY,
+        timestamp=datetime.now(UTC),
     )
 
     if bot.user:
         embed.set_author(
-            name=f"{bot.user.name} • Profile",
+            name=f"{bot.user.name} • Core Overview",
             icon_url=bot.user.display_avatar.url,
         )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
 
     embed.add_field(
-        name="👨‍💻 Creator",
+        name="System",
         value=(
-            "**Who made it**\n"
-            "ladyofthebombs\n\n"
-            "**Started coding**\n"
-            "2023\n\n"
-            "**Focus**\n"
-            "Bots, ideas, iteration, and making features actually feel good to use.\n\n"
-            "**Quote**\n"
-            "*\"if it works, don't ask questions.\"*"
+            "```"
+            "Status   : ONLINE\n"
+            f"Servers  : {len(bot.guilds)}\n"
+            "Commands : 50+\n"
+            "Modules  : Utility / Economy / Casino\n"
+            f"Latency  : {round(bot.latency * 1000)}ms"
+            "```"
         ),
         inline=False,
     )
 
     embed.add_field(
-        name="🕶️ Designer",
+        name="About HYDRA",
         value=(
-            "**Who designed it**\n"
-            "kirasauruss\n\n"
-            "**Style**\n"
-            "Minimal / dark / clean\n\n"
-            "**Since**\n"
-            "2025\n\n"
-            "**Line**\n"
+            "**HYDRA SYSTEM** is designed to give a server one strong center of gravity.\n\n"
+            "Moderation, progression, and fun features all live in one place, "
+            "wrapped in a cleaner, more deliberate presentation."
+        ),
+        inline=False,
+    )
+
+    embed.add_field(
+        name="Creative Direction",
+        value=(
+            "**kirasauruss**\n"
+            "Minimal visuals. Dark tone. Clean spacing.\n"
             "*\"if it looks clean, it's good.\"*"
         ),
-        inline=False,
+        inline=True,
     )
 
     embed.add_field(
-        name="⚡ Features",
+        name="Development",
         value=(
-            "• **Moderation / Tools**  Server control and admin actions\n"
-            "• **Economy / Levels**  Progression, rewards, work, and growth\n"
-            "• **Fun Commands**  Casino games and interactive commands\n"
-            "• **Utilities**  Polls, messaging, and everyday server helpers\n"
-            "• **UI / Embeds**  Styled responses with a cleaner look\n"
-            "• **Extra Feature**  All-in-one system design without clutter"
+            "**ladyofthebombs**\n"
+            "Built through testing, refining, rebuilding, and shipping.\n"
+            "*\"if it works, don't ask questions.\"*"
+        ),
+        inline=True,
+    )
+
+    embed.add_field(
+        name="Era",
+        value=(
+            "**Design:** 2025\n"
+            "**Coding Since:** 2023\n"
+            "**Bot Building:** 2025"
+        ),
+        inline=True,
+    )
+
+    embed.add_field(
+        name="Feature Stack",
+        value=(
+            "• **Moderation**  server control, admin actions, management\n"
+            "• **Economy**  work, rent, rewards, progression, growth\n"
+            "• **Casino**  slots, blackjack, dice, RPS, risk\n"
+            "• **Utilities**  polls, DMs, tools, everyday commands\n"
+            "• **UI**  embeds, buttons, styled system responses"
         ),
         inline=False,
     )
 
     embed.add_field(
-        name="🧠 Vibe",
+        name="Philosophy",
         value=(
-            "**Purpose of bot**\n"
-            "To feel powerful, useful, and clean in one package.\n\n"
-            "**What it avoids**\n"
-            "Messy layouts, bloated commands, and noisy design.\n\n"
-            "**Philosophy**\n"
-            "*Built to stay clean.*"
+            "```"
+            "make it useful\n"
+            "make it clean\n"
+            "make it hit harder than it has to"
+            "```"
+        ),
+        inline=False,
+    )
+
+    embed.add_field(
+        name="Access",
+        value=(
+            "[Invite HYDRA]"
+            "(https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
         inline=False,
     )
 
     embed.set_footer(
-        text="HYDRA SYSTEM • Always evolving.",
+        text="HYDRA SYSTEM • built to stay sharp",
         icon_url=BOT_THUMBNAIL,
     )
 
