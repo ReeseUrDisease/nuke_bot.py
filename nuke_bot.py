@@ -46,7 +46,7 @@ class C:
 # ✨ AESTHETIC UI SYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
 
-BOT_FOOTER = " ⚡ Powered by Void SYSTEM • Advanced Utility Bot"
+BOT_FOOTER = " ⚡ Powered by void.os • Advanced Utility Bot"
 BOT_THUMBNAIL = "https://i.pinimg.com/736x/ad/24/bc/ad24bcb86ea8c3af01bf3702e834fcd8.jpg"
 
 def _base_embed(title, description=None, color=C.PRIMARY):
@@ -2127,7 +2127,7 @@ class VoidView(discord.ui.View):
             embed.title = "⚡ 𝗩𝗢𝗜𝗗 𝗖𝗢𝗥𝗘 // INTERFACE"
             embed.description = (
                 "```ansi\n"
-                "\u001b[1;37mVOID system active.\u001b[0m\n"
+                "\u001b[1;37mvoid.os active.\u001b[0m\n"
                 "\u001b[0;90mA unified system for moderation, economy, and interaction.\u001b[0m\n"
                 "```"
             )
@@ -2211,7 +2211,7 @@ class VoidView(discord.ui.View):
     async def invite(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.update_embed(interaction, "invite")
 
-@tree.command(name="void", description="Access VOID system overview.")
+@tree.command(name="void", description="Access void.os overview.")
 async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
         title="𝗩𝗢𝗜𝗗 — Discord Control System",
@@ -2227,7 +2227,7 @@ async def aboutme(interaction: discord.Interaction):
 
     if bot.user:
         embed.set_author(
-            name="VOID SYSTEM",
+            name="void.os",
             icon_url=bot.user.display_avatar.url,
         )
 
@@ -2303,7 +2303,7 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="⚡ Get Started",
         value=(
-            "[Invite VOID System](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+            "[Invite void.os](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
         inline=False,
     )
