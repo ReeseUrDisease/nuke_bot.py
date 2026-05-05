@@ -2116,14 +2116,14 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
-@tree.command(name="void", description="Access VOID CORE interface.")
+@tree.command(name="void", description="Access VOID system overview.")
 async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="⚡ 𝗩𝗢𝗜𝗗 𝗖𝗢𝗥𝗘 // INTERFACE",
+        title="𝗩𝗢𝗜𝗗 — Discord Control System",
         description=(
             "```ansi\n"
-            "\u001b[1;37mVOID system active.\u001b[0m\n"
-            "\u001b[0;90mA unified system for moderation, economy, and interaction.\u001b[0m\n"
+            "\u001b[1;37mA unified system for managing your server.\u001b[0m\n"
+            "\u001b[0;90mModeration • Economy • Games • Utilities in one clean interface.\u001b[0m\n"
             "```"
         ),
         color=0x2B2D31,
@@ -2132,91 +2132,89 @@ async def aboutme(interaction: discord.Interaction):
 
     if bot.user:
         embed.set_author(
-            name=f"𝗩𝗢𝗜𝗗 CORE • {bot.user.name}",
+            name="VOID SYSTEM",
             icon_url=bot.user.display_avatar.url,
         )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
 
-    # ───────────────────────── STATUS (clear + readable)
+    # ───────────────────────── HERO STATS (like SaaS dashboard cards)
     embed.add_field(
-        name="𝗦𝗧𝗔𝗧𝗨𝗦",
+        name="📊 Overview",
         value=(
             "```"
-            "State     : ACTIVE\n"
-            f"Servers   : {len(bot.guilds)}\n"
-            "Modules   : Admin / Economy / Casino / Utility\n"
-            f"Latency   : {round(bot.latency * 1000)}ms\n"
-            "Health    : Stable\n"
+            "Status     ONLINE\n"
+            f"Servers    {len(bot.guilds)}\n"
+            "Modules    4 Core Systems\n"
+            f"Latency    {round(bot.latency * 1000)}ms\n"
+            "Reliability Stable\n"
             "```"
         ),
         inline=False,
     )
 
-    # ───────────────────────── WHAT VOID IS (simple explanation)
+    # ───────────────────────── WHAT IT DOES (product value section)
     embed.add_field(
-        name="𝗔𝗕𝗢𝗨𝗧 𝗩𝗢𝗜𝗗",
+        name="✨ What VOID Does",
         value=(
-            "```ansi\n"
-            "\u001b[1;37mVOID is a multi-feature Discord system.\u001b[0m\n"
-            "\u001b[0;90mIt combines moderation tools, economy systems, and games into one bot.\u001b[0m\n"
-            "```"
+            "• Moderation tools for full server control\n"
+            "• Economy system with progression & rewards\n"
+            "• Casino & games for engagement\n"
+            "• Utility commands for daily server use"
         ),
         inline=False,
     )
 
-    # ───────────────────────── BUILD INFO (now understandable)
+    # ───────────────────────── BENEFITS (SaaS-style positioning)
     embed.add_field(
-        name="𝗕𝗨𝗜𝗟𝗗 𝗜𝗡𝗙𝗢",
+        name="🚀 Why VOID",
+        value=(
+            "• One system instead of multiple bots\n"
+            "• Clean, fast, low-noise command structure\n"
+            "• Built for both small and large communities\n"
+            "• Consistent UI across all features"
+        ),
+        inline=False,
+    )
+
+    # ───────────────────────── SYSTEM STATUS (trust section)
+    embed.add_field(
+        name="🧠 System Status",
         value=(
             "```"
-            "Started   : 2023\n"
-            "Expanded  : 2025\n"
-            "Current   : 2025\n"
-            "Status    : Actively Developed\n"
+            "Uptime        Active\n"
+            "Errors        None detected\n"
+            "Maintenance   Not required\n"
+            "Version       v1.0\n"
             "```"
         ),
         inline=True,
     )
 
-    # ───────────────────────── MODULES (clean + obvious)
+    # ───────────────────────── RELEASE INFO (clean product info)
     embed.add_field(
-        name="𝗙𝗘𝗔𝗧𝗨𝗥𝗘𝗦",
+        name="📦 Release",
         value=(
-            "```ansi\n"
-            "⚙ Admin     → moderation & server control\n"
-            "💰 Economy   → coins, work, rewards\n"
-            "🎰 Casino    → games & gambling systems\n"
-            "🧰 Utility   → tools & commands\n"
+            "```"
+            "Initial Build 2023\n"
+            "Major Update  2025\n"
+            "Current State  Stable\n"
             "```"
         ),
         inline=True,
     )
 
-    # ───────────────────────── DIRECTIVE (simple, not poetic confusion)
+    # ───────────────────────── CTA (call to action like SaaS)
     embed.add_field(
-        name="𝗗𝗜𝗥𝗘𝗖𝗧𝗜𝗩𝗘",
+        name="⚡ Get Started",
         value=(
-            "```ansi\n"
-            "\u001b[1;37mkeep it clean\n"
-            "keep it useful\n"
-            "keep it fast\u001b[0m\n"
-            "```"
-        ),
-        inline=False,
-    )
-
-    # ───────────────────────── ACCESS
-    embed.add_field(
-        name="𝗔𝗖𝗖𝗘𝗦𝗦",
-        value=(
-            "[Invite VOID](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+            "[Invite VOID System](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
         inline=False,
     )
 
     embed.set_footer(
-        text="VOID SYSTEM • active and running",
+        text="VOID — built for structured server control",
         icon_url=BOT_THUMBNAIL,
     )
 
