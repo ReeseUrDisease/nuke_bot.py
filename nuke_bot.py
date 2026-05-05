@@ -2147,17 +2147,17 @@ embed.add_field(
 )
 
 
-    embed.add_field(
-        name="👨‍💻  About the Creator",
-        value=(
-            "Created by **ladyofthebombs**\n\n"
-            "• Started coding in **2023** (no idea what was going on)\n"
-            "• Tries a bit of everything\n"
-            "• Building bots since **2025** (slightly more idea now)\n\n"
-            "_\"if it works, don’t ask questions.\"_"
-        ),
-        inline=False
-    )
+embed.add_field(
+    name="👨‍💻  About the Creator",
+    value=(
+        "Created by **ladyofthebombs**\n\n"
+        "• Started coding in **2023** (no idea what was going on)\n"
+        "• Tries a bit of everything\n"
+        "• Building bots since **2025** (slightly more idea now)\n\n"
+        "_\"if it works, don’t ask questions.\"_"
+    ),
+    inline=False
+)
 
     # Origin Story
     embed.add_field(
