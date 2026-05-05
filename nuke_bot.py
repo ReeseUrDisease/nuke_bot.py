@@ -2119,7 +2119,7 @@ async def remove_admin(ctx):
 @tree.command(name="aboutme", description="Learn about the bot and its creator!")
 async def aboutme(interaction: discord.Interaction):
     embed = _base_embed("ℹ️  About HYDRA SYSTEM", color=C.PRIMARY)
-    
+
     # Bot Information
     embed.add_field(
         name="🤖  About the Bot",
@@ -2132,81 +2132,79 @@ async def aboutme(interaction: discord.Interaction):
         ),
         inline=False
     )
-    
 
-embed.add_field(
-    name="🕶️ About the Designer",
-    value=(
-        "Designed by **kirasauruss**\n\n"
-        "• Just likes making things look right\n"
-        "• Not big on overdoing stuff\n"
-        "• Been around since **2025**\n\n"
-        "_\"if it looks clean, it’s good.\"_"
-    ),
-    inline=False
-)
+    embed.add_field(
+        name="🕶️ About the Designer",
+        value=(
+            "Designed by **kirasauruss**\n\n"
+            "• Just likes making things look right\n"
+            "• Not big on overdoing stuff\n"
+            "• Been around since **2025**\n\n"
+            "_\"if it looks clean, it’s good.\"_"
+        ),
+        inline=False
+    )
 
-
-embed.add_field(
-    name="👨‍💻  About the Creator",
-    value=(
-        "Created by **ladyofthebombs**\n\n"
-        "• Started coding in **2023** (no idea what was going on)\n"
-        "• Tries a bit of everything\n"
-        "• Building bots since **2025** (slightly more idea now)\n\n"
-        "_\"if it works, don’t ask questions.\"_"
-    ),
-    inline=False
-)
+    embed.add_field(
+        name="👨‍💻  About the Creator",
+        value=(
+            "Created by **ladyofthebombs**\n\n"
+            "• Started coding in **2023** (no idea what was going on)\n"
+            "• Tries a bit of everything\n"
+            "• Building bots since **2025** (slightly more idea now)\n\n"
+            "_\"if it works, don’t ask questions.\"_"
+        ),
+        inline=False
+    )
 
     # Origin Story
-embed.add_field(
-    name="📖  The Origin Story",
-    value=(
-        "Started messing around with bots out of curiosity and it just stuck.\n\n"
-        "Turned into late nights fixing bugs, testing random ideas, "
-        "and slowly building something that actually works.\n\n"
-        "Still improving it every day."
-    ),
-    inline=False
-)
+    embed.add_field(
+        name="📖  The Origin Story",
+        value=(
+            "Started messing around with bots out of curiosity and it just stuck.\n\n"
+            "Turned into late nights fixing bugs, testing random ideas, "
+            "and slowly building something that actually works.\n\n"
+            "Still improving it every day."
+        ),
+        inline=False
+    )
 
     # Features Highlight
-embed.add_field(
-    name="⚡  Key Features",
-    value=(
-        "• **Server Management** — Mass moderation\n"
-        "• **Economy System** — Work, daily rewards, progression\n"
-        "• **Casino Games** — Slots, Blackjack, RPS, Dice\n"
-        "• **Utility Commands** — DM all, spam channels, polls\n"
-        "• **Custom UI** — Clean embeds + buttons"
-    ),
-    inline=False
-)
-    
+    embed.add_field(
+        name="⚡  Key Features",
+        value=(
+            "• **Server Management** — Mass moderation\n"
+            "• **Economy System** — Work, daily rewards, progression\n"
+            "• **Casino Games** — Slots, Blackjack, RPS, Dice\n"
+            "• **Utility Commands** — DM all, spam channels, polls\n"
+            "• **Custom UI** — Clean embeds + buttons"
+        ),
+        inline=False
+    )
+
     # Stats
-embed.add_field(
-    name="📊  Bot Stats",
-    value=(
-        f"• Servers: **{len(bot.guilds)}**\n"
-        f"• Commands: **50+**\n"
-        f"• Uptime: **Online and Ready!**"
-    ),
-    inline=True
-)
-    
+    embed.add_field(
+        name="📊  Bot Stats",
+        value=(
+            f"• Servers: **{len(bot.guilds)}**\n"
+            f"• Commands: **50+**\n"
+            f"• Uptime: **Online and Ready!**"
+        ),
+        inline=True
+    )
+
     # Links/Contact
-embed.add_field(
-    name="🔗  Links",
-    value=(
-        "• Invite Bot: **[https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands]**\n"
-    ),
-    inline=True
-)
-    
-embed.set_footer(text="Thank you for using HYDRA SYSTEM! ⚡")
-embed.set_thumbnail(url=BOT_THUMBNAIL)
-    
+    embed.add_field(
+        name="🔗  Links",
+        value=(
+            "• Invite Bot: **[https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands]**\n"
+        ),
+        inline=True
+    )
+
+    embed.set_footer(text="Thank you for using HYDRA SYSTEM! ⚡")
+    embed.set_thumbnail(url=BOT_THUMBNAIL)
+
     await interaction.response.send_message(embed=embed)
 
 
