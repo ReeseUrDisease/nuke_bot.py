@@ -2116,120 +2116,136 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
-@tree.command(name="aboutme", description="View Void SYSTEM details.")
+@tree.command(name="diagnostics", description="View VOID SYSTEM core diagnostics.")
 async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="Void SYSTEM // PROFILE",
+        title="⚡ VOID CORE // SYSTEM INTERFACE v1.0",
         description=(
-            ">>> **CONTROL • ECONOMY • CASINO • UTILITY**\n"
-            "Built for servers that want power without clutter."
+            "```ansi\n"
+            "\u001b[1;37mInitializing VOID kernel...\u001b[0m\n"
+            "\u001b[0;90mScanning modules • stabilizing runtime • syncing nodes\u001b[0m\n"
+            "```"
         ),
-        color=C.PRIMARY,
+        color=0x2B2D31,
         timestamp=datetime.now(UTC),
     )
 
     if bot.user:
         embed.set_author(
-            name=f"{bot.user.name} • System Overview",
+            name=f"VOID CORE • {bot.user.name}",
             icon_url=bot.user.display_avatar.url,
         )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
 
-    # SYSTEM
+    # ───────────────────────── CORE DIAGNOSTICS
     embed.add_field(
-        name="SYSTEM",
+        name="🧠 CORE DIAGNOSTICS",
         value=(
             "```"
-            "Status   : ONLINE\n"
-            f"Servers  : {len(bot.guilds)}\n"
-            "Commands : 50+\n"
-            "Modules  : Utility • Economy • Casino\n"
-            f"Latency  : {round(bot.latency * 1000)}ms"
+            "STATUS     : ONLINE\n"
+            f"NODES      : {len(bot.guilds)}\n"
+            "MODULES    : ADMIN / ECON / CASINO / UTIL\n"
+            f"LATENCY    : {round(bot.latency * 1000)}ms\n"
+            "SECURITY   : STABLE\n"
             "```"
         ),
         inline=False,
     )
 
-    # ABOUT
+    # ───────────────────────── VOID OVERVIEW
     embed.add_field(
-        name="ABOUT Void",
+        name="🌌 VOID CORE DESCRIPTION",
         value=(
-            "**Void SYSTEM** centralizes core server functions into one interface.\n"
-            "Moderation, progression, and entertainment — unified and streamlined."
+            "```ansi\n"
+            "\u001b[1;37mVOID is not a bot.\u001b[0m\n"
+            "\u001b[0;90mIt is a unified control system for server operation.\u001b[0m\n\n"
+            "\u001b[0;90mEconomy, moderation, and interaction layers\n"
+            "are processed through a single structured runtime.\u001b[0m\n"
+            "```"
         ),
         inline=False,
     )
 
-    # CREATORS (cleaned labels)
+    # ───────────────────────── SYSTEM ARCHITECTS
     embed.add_field(
-        name="CREATIVE",
+        name="⚙ SYSTEM ARCHITECTS",
         value=(
             "**kirasauruss**\n"
-            "Minimal design • dark tone\n"
-            "_\"if it looks clean, it's good.\"_"
+            "```ansi\n"
+            "\u001b[0;90mUI logic • visual structure • aesthetic control\u001b[0m\n"
+            "```\n"
+            "*interface design unit*"
         ),
         inline=True,
     )
 
     embed.add_field(
-        name="DEVELOPMENT",
+        name="🔧 CORE ENGINE",
         value=(
             "**ladyofthebombs**\n"
-            "Built, tested, refined\n"
-            "_\"if it works, don't ask questions.\"_"
+            "```ansi\n"
+            "\u001b[0;90msystem stability • feature deployment • runtime integrity\u001b[0m\n"
+            "```\n"
+            "*execution layer unit*"
         ),
         inline=True,
     )
 
     embed.add_field(
-        name="ERA",
+        name="📅 SYSTEM TIMELINE",
         value=(
-            "Design: 2025\n"
-            "Coding: 2023\n"
-            "Bots: 2025"
+            "```"
+            "Design Layer   : 2025\n"
+            "Code Genesis   : 2023\n"
+            "System Build   : 2025\n"
+            "Runtime Ver    : 1.0\n"
+            "```"
         ),
         inline=True,
     )
 
-    # FEATURES (cleaned bullets)
+    # ───────────────────────── FEATURE STACK
     embed.add_field(
-        name="FEATURES",
+        name="⚔ MODULE STACK",
         value=(
-            "• Moderation — server control tools\n"
-            "• Economy — rewards, progression\n"
-            "• Casino — risk-based games\n"
-            "• Utilities — polls, DMs, tools\n"
-            "• UI — embeds, buttons, styling"
-        ),
-        inline=False,
-    )
-
-    # PHILOSOPHY (more “VOID” feel)
-    embed.add_field(
-        name="PHILOSOPHY",
-        value=(
-            "```"
-            "make it useful\n"
-            "make it clean\n"
-            "remove everything else"
+            "```ansi\n"
+            "⚙ ADMIN      → server control & permissions\n"
+            "💰 ECON      → progression & credit systems\n"
+            "🎰 CASINO    → probability-based gaming\n"
+            "🧰 UTIL      → tools & automation\n"
+            "🎨 UI LAYER  → embeds & interaction design\n"
             "```"
         ),
         inline=False,
     )
 
-    # ACCESS
+    # ───────────────────────── CORE DIRECTIVE
     embed.add_field(
-        name="ACCESS",
+        name="🧬 CORE DIRECTIVE",
         value=(
-            "[Invite Void]"
-            "(https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+            "```ansi\n"
+            "\u001b[1;37m- maintain clarity\n"
+            "- reduce noise\n"
+            "- maximize control density\n"
+            "- ensure system elegance under load\u001b[0m\n"
+            "```"
         ),
         inline=False,
     )
 
+    # ───────────────────────── NODE ACCESS
+    embed.add_field(
+        name="🔗 NODE ACCESS PORTAL",
+        value=(
+            "[Initialize Connection](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+        ),
+        inline=False,
+    )
+
+    # ───────────────────────── FOOTER
     embed.set_footer(
-        text="Void SYSTEM • minimal by design",
+        text="VOID CORE // ACTIVE INSTANCE — the system does not sleep",
         icon_url=BOT_THUMBNAIL,
     )
 
