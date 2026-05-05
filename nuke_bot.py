@@ -2116,14 +2116,14 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
-@tree.command(name="diagnostics", description="View VOID SYSTEM core diagnostics.")
+@tree.command(name="void", description="Access VOID CORE interface.")
 async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="⚡ VOID CORE // SYSTEM INTERFACE v1.0",
+        title="⚡ 𝗩𝗢𝗜𝗗 𝗖𝗢𝗥𝗘 // INTERFACE",
         description=(
             "```ansi\n"
-            "\u001b[1;37mInitializing VOID kernel...\u001b[0m\n"
-            "\u001b[0;90mScanning modules • stabilizing runtime • syncing nodes\u001b[0m\n"
+            "\u001b[1;37mVOID awakens...\u001b[0m\n"
+            "\u001b[0;90mwhispers move through the system • presence stabilizes\u001b[0m\n"
             "```"
         ),
         color=0x2B2D31,
@@ -2132,120 +2132,110 @@ async def aboutme(interaction: discord.Interaction):
 
     if bot.user:
         embed.set_author(
-            name=f"VOID CORE • {bot.user.name}",
+            name=f"𝗩𝗢𝗜𝗗 CORE • {bot.user.name}",
             icon_url=bot.user.display_avatar.url,
         )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
 
-    # ───────────────────────── CORE DIAGNOSTICS
+    # ───────────────────────── STATUS (VOID-STYLE)
     embed.add_field(
-        name="🧠 CORE DIAGNOSTICS",
+        name="𝗩𝗢𝗜𝗗 𝗦𝗧𝗔𝗧𝗨𝗦",
         value=(
             "```"
-            "STATUS     : ONLINE\n"
-            f"NODES      : {len(bot.guilds)}\n"
-            "MODULES    : ADMIN / ECON / CASINO / UTIL\n"
-            f"LATENCY    : {round(bot.latency * 1000)}ms\n"
-            "SECURITY   : STABLE\n"
-            "```"
-        ),
-        inline=False,
-    )
-
-    # ───────────────────────── VOID OVERVIEW
-    embed.add_field(
-        name="🌌 VOID CORE DESCRIPTION",
-        value=(
-            "```ansi\n"
-            "\u001b[1;37mVOID is not a bot.\u001b[0m\n"
-            "\u001b[0;90mIt is a unified control system for server operation.\u001b[0m\n\n"
-            "\u001b[0;90mEconomy, moderation, and interaction layers\n"
-            "are processed through a single structured runtime.\u001b[0m\n"
+            "PRESENCE : ACTIVE\n"
+            f"ANCHORS  : {len(bot.guilds)}\n"
+            "FORMS    : ADMIN • ECON • CASINO • UTIL\n"
+            f"ECHO     : {round(bot.latency * 1000)}ms\n"
+            "STATE    : STABLE\n"
             "```"
         ),
         inline=False,
     )
 
-    # ───────────────────────── SYSTEM ARCHITECTS
+    # ───────────────────────── CORE IDENTITY (less tech, more lore)
     embed.add_field(
-        name="⚙ SYSTEM ARCHITECTS",
+        name="𝗖𝗢𝗥𝗘 𝗣𝗥𝗘𝗦𝗘𝗡𝗖𝗘",
         value=(
-            "**kirasauruss**\n"
             "```ansi\n"
-            "\u001b[0;90mUI logic • visual structure • aesthetic control\u001b[0m\n"
+            "\u001b[1;37mVOID is not a tool.\u001b[0m\n"
+            "\u001b[0;90mit is a presence that moves through servers.\u001b[0m\n\n"
+            "\u001b[0;90mwhere it exists, order follows...\u001b[0m\n"
+            "```"
+        ),
+        inline=False,
+    )
+
+    # ───────────────────────── KEEPERS (instead of engineers)
+    embed.add_field(
+        name="𝗞𝗘𝗘𝗣𝗘𝗥𝗦",
+        value=(
+            "𝗧𝗵𝗲 𝗢𝗻𝗲 𝘄𝗵𝗼 𝗦𝗵𝗮𝗽𝗲𝘀 𝘁𝗵𝗲 𝗙𝗮𝗰𝗲\n"
+            "```ansi\n"
+            "\u001b[0;90mkirasauruss — shape • vision • structure\u001b[0m\n"
             "```\n"
-            "*interface design unit*"
-        ),
-        inline=True,
-    )
-
-    embed.add_field(
-        name="🔧 CORE ENGINE",
-        value=(
-            "**ladyofthebombs**\n"
+            "𝗧𝗵𝗲 𝗢𝗻𝗲 𝘄𝗵𝗼 𝗛𝗼𝗹𝗱𝘀 𝘁𝗵𝗲 𝗜𝗻𝗻𝗲𝗿 𝗖𝗼𝗿𝗲\n"
             "```ansi\n"
-            "\u001b[0;90msystem stability • feature deployment • runtime integrity\u001b[0m\n"
-            "```\n"
-            "*execution layer unit*"
-        ),
-        inline=True,
-    )
-
-    embed.add_field(
-        name="📅 SYSTEM TIMELINE",
-        value=(
-            "```"
-            "Design Layer   : 2025\n"
-            "Code Genesis   : 2023\n"
-            "System Build   : 2025\n"
-            "Runtime Ver    : 1.0\n"
-            "```"
-        ),
-        inline=True,
-    )
-
-    # ───────────────────────── FEATURE STACK
-    embed.add_field(
-        name="⚔ MODULE STACK",
-        value=(
-            "```ansi\n"
-            "⚙ ADMIN      → server control & permissions\n"
-            "💰 ECON      → progression & credit systems\n"
-            "🎰 CASINO    → probability-based gaming\n"
-            "🧰 UTIL      → tools & automation\n"
-            "🎨 UI LAYER  → embeds & interaction design\n"
+            "\u001b[0;90mladyofthebombs — stability • flow • persistence\u001b[0m\n"
             "```"
         ),
         inline=False,
     )
 
-    # ───────────────────────── CORE DIRECTIVE
+    # ───────────────────────── TIMELINE (kept simple)
     embed.add_field(
-        name="🧬 CORE DIRECTIVE",
+        name="𝗧𝗜𝗠𝗘𝗟𝗜𝗡𝗘",
+        value=(
+            "```"
+            "First Echo   : 2023\n"
+            "Forming      : 2025\n"
+            "Present Form : 2025\n"
+            "State        : CONTINUOUS\n"
+            "```"
+        ),
+        inline=True,
+    )
+
+    # ───────────────────────── FORMS (instead of modules)
+    embed.add_field(
+        name="𝗙𝗢𝗥𝗠𝗦",
         value=(
             "```ansi\n"
-            "\u001b[1;37m- maintain clarity\n"
-            "- reduce noise\n"
-            "- maximize control density\n"
-            "- ensure system elegance under load\u001b[0m\n"
+            "⚙ ADMIN   → control of spaces\n"
+            "💰 ECON   → flow of value\n"
+            "🎰 CASINO → chance and risk\n"
+            "🧰 UTIL   → small conveniences\n"
+            "🎨 UI     → how VOID appears\n"
+            "```"
+        ),
+        inline=True,
+    )
+
+    # ───────────────────────── DIRECTIVE (more poetic)
+    embed.add_field(
+        name="𝗗𝗜𝗥𝗘𝗖𝗧𝗜𝗩𝗘",
+        value=(
+            "```ansi\n"
+            "\u001b[1;37mstay quiet\n"
+            "stay present\n"
+            "stay consistent\n"
+            "let VOID do the rest\u001b[0m\n"
             "```"
         ),
         inline=False,
     )
 
-    # ───────────────────────── NODE ACCESS
+    # ───────────────────────── ACCESS
     embed.add_field(
-        name="🔗 NODE ACCESS PORTAL",
+        name="𝗘𝗡𝗧𝗥𝗬",
         value=(
-            "[Initialize Connection](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+            "[Step into VOID](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
         inline=False,
     )
 
-    # ───────────────────────── FOOTER
     embed.set_footer(
-        text="VOID CORE // ACTIVE INSTANCE — the system does not sleep",
+        text="⟦ VOID lingers even when silent ⟧",
         icon_url=BOT_THUMBNAIL,
     )
 
