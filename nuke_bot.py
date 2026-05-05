@@ -2127,24 +2127,38 @@ async def aboutme(interaction: discord.Interaction):
             "**HYDRA SYSTEM** is a powerful Discord utility bot designed to "
             "bring advanced server management, economy features, and fun games "
             "all in one place!\n\n"
-            "From nuking servers to playing blackjack, HYDRA does it all. "
-            "Built with passion and precision to create the ultimate Discord experience."
+            "From managing servers to playing blackjack, HYDRA does it all. "
+            "Built with passion and precision to create the ultimate Discord experience. 😁"
         ),
         inline=False
     )
     
-    # Creator Information
-    embed.add_field(
-        name="👨‍💻  About the Creator",
-        value=(
-            "Created by **[Your Name Here]**\n\n"
-            "• Started coding in **[Year]**\n"
-            "• Passionate about **[Your Interests]**\n"
-            "• Building bots since **[Year]**\n\n"
-            "_\"[Your Quote or Mission Statement]\"_"
-        ),
-        inline=False
-    )
+
+embed.add_field(
+    name="🕶️ About the Designer",
+    value=(
+        "Designed by **kirasauruss**\n\n"
+        "• Just likes making things look right\n"
+        "• Not big on overdoing stuff\n"
+        "• Been around since **2025**\n\n"
+        "_\"if it looks clean, it’s good.\"_"
+    ),
+    inline=False
+)
+
+
+embed.add_field(
+    name="👨‍💻  About the Creator",
+    value=(
+        "Created by **ladyofthebombs**\n\n"
+        "• Started coding in **2023** (no idea what was going on)\n"
+        "• Tries a bit of everything\n"
+        "• Building bots since **2025** (slightly more idea now)\n\n"
+        "_\"if it works, don’t ask questions.\"_"
+    ),
+    inline=False
+)
+
     
     # Origin Story
     embed.add_field(
@@ -2163,7 +2177,7 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="⚡  Key Features",
         value=(
-            "• **Server Management** — Nuke, mass actions, and moderation\n"
+            "• **Server Management** — Mass moderation\n"
             "• **Economy System** — Work, daily rewards, and career progression\n"
             "• **Casino Games** — Slots, Blackjack, RPS, Dice, and more\n"
             "• **Utility Commands** — DM all, spam channels, polls\n"
@@ -2187,9 +2201,7 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="🔗  Links",
         value=(
-            "• Support Server: **[Add Link]**\n"
-            "• Invite Bot: **[Add Link]**\n"
-            "• GitHub: **[Add Link]**"
+            "• Invite Bot: **[https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands]**\n"
         ),
         inline=True
     )
