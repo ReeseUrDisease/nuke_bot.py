@@ -2160,29 +2160,29 @@ embed.add_field(
 )
 
     # Origin Story
-    embed.add_field(
-        name="📖  The Origin Story",
-        value=(
-            "Started messing around with bots out of curiosity and it just stuck.\n\n"
-            "Turned into late nights fixing bugs, testing random ideas, "
-            "and slowly building something that actually works.\n\n"
-            "Still improving it every day."
-        ),
-        inline=False
-    )
+embed.add_field(
+    name="📖  The Origin Story",
+    value=(
+        "Started messing around with bots out of curiosity and it just stuck.\n\n"
+        "Turned into late nights fixing bugs, testing random ideas, "
+        "and slowly building something that actually works.\n\n"
+        "Still improving it every day."
+    ),
+    inline=False
+)
 
     # Features Highlight
-    embed.add_field(
-        name="⚡  Key Features",
-        value=(
-            "• **Server Management** — Mass moderation\n"
-            "• **Economy System** — Work, daily rewards, progression\n"
-            "• **Casino Games** — Slots, Blackjack, RPS, Dice\n"
-            "• **Utility Commands** — DM all, spam channels, polls\n"
-            "• **Custom UI** — Clean embeds + buttons"
-        ),
+embed.add_field(
+    name="⚡  Key Features",
+    value=(
+        "• **Server Management** — Mass moderation\n"
+        "• **Economy System** — Work, daily rewards, progression\n"
+        "• **Casino Games** — Slots, Blackjack, RPS, Dice\n"
+        "• **Utility Commands** — DM all, spam channels, polls\n"
+        "• **Custom UI** — Clean embeds + buttons"
+    ),
     inline=False
-    )
+)
     
     # Stats
     embed.add_field(
