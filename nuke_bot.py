@@ -47,7 +47,7 @@ class C:
 # ══════════════════════════════════════════════════════════════════════════════
 
 BOT_FOOTER = " ⚡ Powered by Void SYSTEM • Advanced Utility Bot"
-BOT_THUMBNAIL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"  # replace with your own image if wanted
+BOT_THUMBNAIL = "https://i.pinimg.com/736x/ad/24/bc/ad24bcb86ea8c3af01bf3702e834fcd8.jpg"
 
 def _base_embed(title, description=None, color=C.PRIMARY):
     embed = discord.Embed(
@@ -59,7 +59,7 @@ def _base_embed(title, description=None, color=C.PRIMARY):
 
     embed.set_footer(
         text=BOT_FOOTER,
-        icon_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"
+        icon_url="https://i.pinimg.com/736x/ad/24/bc/ad24bcb86ea8c3af01bf3702e834fcd8.jpg"
     )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
@@ -2309,7 +2309,7 @@ async def aboutme(interaction: discord.Interaction):
     )
 
     embed.set_footer(
-        text="VOID — built for structured server control",
+        text="VOID • crafted by kirasauruss & ladyofthebombs",
         icon_url=BOT_THUMBNAIL,
     )
 
