@@ -2120,23 +2120,32 @@ async def remove_admin(ctx):
 async def aboutme(interaction: discord.Interaction):
     embed = _base_embed(
         "HYDRA SYSTEM",
-        description="Clean utility, economy, and fun in one system.",
+        description=(
+            ">>> **A polished multi-purpose Discord system**\n"
+            "Built for clean utility, progression, and personality."
+        ),
         color=C.PRIMARY,
     )
 
     if bot.user:
         embed.set_author(
-            name=f"{bot.user.name} • About",
+            name=f"{bot.user.name} • Profile",
             icon_url=bot.user.display_avatar.url,
         )
+
+    embed.set_thumbnail(url=BOT_THUMBNAIL)
 
     embed.add_field(
         name="👨‍💻 Creator",
         value=(
-            "**Who made it:** ladyofthebombs\n"
-            "**Started coding:** 2023\n"
-            "**Focus:** building bots, trying new ideas, improving features\n"
-            "**Quote:** *\"if it works, don't ask questions.\"*"
+            "**Who made it**\n"
+            "ladyofthebombs\n\n"
+            "**Started coding**\n"
+            "2023\n\n"
+            "**Focus**\n"
+            "Bots, ideas, iteration, and making features actually feel good to use.\n\n"
+            "**Quote**\n"
+            "*\"if it works, don't ask questions.\"*"
         ),
         inline=False,
     )
@@ -2144,10 +2153,14 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="🕶️ Designer",
         value=(
-            "**Who designed it:** kirasauruss\n"
-            "**Style:** clean / minimal / sharp\n"
-            "**Since:** 2025\n"
-            "**Line:** *\"if it looks clean, it's good.\"*"
+            "**Who designed it**\n"
+            "kirasauruss\n\n"
+            "**Style**\n"
+            "Minimal / dark / clean\n\n"
+            "**Since**\n"
+            "2025\n\n"
+            "**Line**\n"
+            "*\"if it looks clean, it's good.\"*"
         ),
         inline=False,
     )
@@ -2155,12 +2168,12 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="⚡ Features",
         value=(
-            "• Moderation / server tools\n"
-            "• Economy / levels / progression\n"
-            "• Fun commands / casino games\n"
-            "• Utilities / polls / DMs / management\n"
-            "• UI / embeds / styled responses\n"
-            "• Extra feature: all-in-one system design"
+            "• **Moderation / Tools**  Server control and admin actions\n"
+            "• **Economy / Levels**  Progression, rewards, work, and growth\n"
+            "• **Fun Commands**  Casino games and interactive commands\n"
+            "• **Utilities**  Polls, messaging, and everyday server helpers\n"
+            "• **UI / Embeds**  Styled responses with a cleaner look\n"
+            "• **Extra Feature**  All-in-one system design without clutter"
         ),
         inline=False,
     )
@@ -2168,15 +2181,20 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="🧠 Vibe",
         value=(
-            "**Purpose:** make one bot that feels useful and polished\n"
-            "**Avoids:** clutter, bloated layouts, messy commands\n"
-            "**Philosophy:** *Built to stay clean.*"
+            "**Purpose of bot**\n"
+            "To feel powerful, useful, and clean in one package.\n\n"
+            "**What it avoids**\n"
+            "Messy layouts, bloated commands, and noisy design.\n\n"
+            "**Philosophy**\n"
+            "*Built to stay clean.*"
         ),
         inline=False,
     )
 
-    embed.set_thumbnail(url=BOT_THUMBNAIL)
-    embed.set_footer(text="Always evolving.", icon_url=BOT_THUMBNAIL)
+    embed.set_footer(
+        text="HYDRA SYSTEM • Always evolving.",
+        icon_url=BOT_THUMBNAIL,
+    )
 
     await interaction.response.send_message(embed=embed)
 
