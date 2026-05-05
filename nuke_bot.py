@@ -2116,39 +2116,54 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
-@tree.command(name="aboutme", description="Learn about the bot and its creators!")
+@tree.command(name="aboutme", description="View HYDRA SYSTEM details.")
 async def aboutme(interaction: discord.Interaction):
-    embed = _base_embed(
-        "HYDRA SYSTEM",
+    embed = discord.Embed(
+        title="HYDRA SYSTEM",
         description=(
-            "Advanced utility. Economy. Moderation. Casino.\n"
-            "*Built to look clean and hit hard.*"
+            ">>> **Precision utility for modern Discord servers**\n"
+            "Moderation, economy, casino, and server tools wrapped in a cleaner visual style."
         ),
         color=C.PRIMARY,
+        timestamp=datetime.now(UTC),
     )
 
     if bot.user:
         embed.set_author(
-            name=f"{bot.user.name} • System Overview",
+            name=f"{bot.user.name}  |  System Profile",
             icon_url=bot.user.display_avatar.url,
         )
 
+    embed.set_thumbnail(url=BOT_THUMBNAIL)
+
     embed.add_field(
-        name="Core Identity",
+        name="System",
         value=(
-            "**HYDRA SYSTEM** is a multi-purpose Discord bot built for servers "
-            "that want strong utility features without a messy experience.\n\n"
-            "It combines moderation tools, economy systems, and interactive games "
-            "into one polished command suite."
+            "```"
+            "Status   : ONLINE\n"
+            f"Servers  : {len(bot.guilds)}\n"
+            "Commands : 50+\n"
+            "Type     : Utility / Economy / Games"
+            "```"
         ),
         inline=False,
     )
 
     embed.add_field(
-        name="Design",
+        name="About HYDRA",
+        value=(
+            "Built to handle **server control**, **economy progression**, and "
+            "**interactive features** without looking bland.\n\n"
+            "The goal is simple: make the bot feel sharp, useful, and deliberate."
+        ),
+        inline=False,
+    )
+
+    embed.add_field(
+        name="Creative Direction",
         value=(
             "**kirasauruss**\n"
-            "Clean layouts, strong visuals, no unnecessary clutter.\n"
+            "Clean visuals, strong spacing, minimal clutter.\n"
             "*\"if it looks clean, it's good.\"*"
         ),
         inline=True,
@@ -2158,52 +2173,44 @@ async def aboutme(interaction: discord.Interaction):
         name="Development",
         value=(
             "**ladyofthebombs**\n"
-            "Built through experimenting, fixing, improving, and shipping.\n"
+            "Built through testing, breaking, refining, and shipping.\n"
             "*\"if it works, don't ask questions.\"*"
         ),
         inline=True,
     )
 
     embed.add_field(
-        name="Since",
+        name="Era",
         value=(
             "**Design:** 2025\n"
-            "**Build Journey:** 2023+\n"
-            "**Bot Era:** 2025"
+            "**Coding Since:** 2023\n"
+            "**Bot Building:** 2025"
         ),
         inline=True,
     )
 
     embed.add_field(
-        name="What HYDRA Does",
+        name="Feature Stack",
         value=(
-            "• **Server Management** for fast admin actions\n"
-            "• **Economy Progression** with work, daily, rent, and jobs\n"
-            "• **Casino Games** like slots, blackjack, dice, and RPS\n"
-            "• **Utility Commands** for polls, DMs, spam tools, and more\n"
-            "• **Custom Embed UI** with a stronger visual style"
+            "• **Moderation**  Mass actions and server tools\n"
+            "• **Economy**  Jobs, rent, daily rewards, progression\n"
+            "• **Casino**  Slots, blackjack, dice, RPS\n"
+            "• **Utility**  Polls, DMs, management commands\n"
+            "• **UI**  Styled embeds and custom interaction flow"
         ),
         inline=False,
     )
 
     embed.add_field(
-        name="System Status",
+        name="Philosophy",
         value=(
-            f"**Servers:** {len(bot.guilds)}\n"
-            "**Commands:** 50+\n"
-            "**State:** Online"
+            "```"
+            "make it useful\n"
+            "make it clean\n"
+            "make it feel expensive"
+            "```"
         ),
-        inline=True,
-    )
-
-    embed.add_field(
-        name="Build Philosophy",
-        value=(
-            "Make it useful.\n"
-            "Make it clean.\n"
-            "Make it feel intentional."
-        ),
-        inline=True,
+        inline=False,
     )
 
     embed.add_field(
@@ -2212,11 +2219,13 @@ async def aboutme(interaction: discord.Interaction):
             "[Invite HYDRA]"
             "(https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
-        inline=True,
+        inline=False,
     )
 
-    embed.set_thumbnail(url=BOT_THUMBNAIL)
-    embed.set_footer(text="HYDRA SYSTEM • Clean power for your server")
+    embed.set_footer(
+        text="HYDRA SYSTEM  •  built with taste, not noise",
+        icon_url=BOT_THUMBNAIL,
+    )
 
     await interaction.response.send_message(embed=embed)
 
