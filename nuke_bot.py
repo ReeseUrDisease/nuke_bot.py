@@ -2185,24 +2185,24 @@ embed.add_field(
 )
     
     # Stats
-    embed.add_field(
-        name="📊  Bot Stats",
-        value=(
-            f"• Servers: **{len(bot.guilds)}**\n"
-            f"• Commands: **50+**\n"
-            f"• Uptime: **Online and Ready!**"
-        ),
-        inline=True
-    )
+embed.add_field(
+    name="📊  Bot Stats",
+    value=(
+        f"• Servers: **{len(bot.guilds)}**\n"
+        f"• Commands: **50+**\n"
+        f"• Uptime: **Online and Ready!**"
+    ),
+    inline=True
+)
     
     # Links/Contact
-    embed.add_field(
-        name="🔗  Links",
-        value=(
-            "• Invite Bot: **[https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands]**\n"
-        ),
-        inline=True
-    )
+embed.add_field(
+    name="🔗  Links",
+    value=(
+        "• Invite Bot: **[https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands]**\n"
+    ),
+    inline=True
+)
     
     embed.set_footer(text="Thank you for using HYDRA SYSTEM! ⚡")
     embed.set_thumbnail(url=BOT_THUMBNAIL)
