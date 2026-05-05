@@ -2116,6 +2116,101 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
+class VoidView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=180)
+
+    async def update_embed(self, interaction, mode: str):
+        embed = interaction.message.embeds[0]
+
+        if mode == "overview":
+            embed.title = "⚡ 𝗩𝗢𝗜𝗗 𝗖𝗢𝗥𝗘 // INTERFACE"
+            embed.description = (
+                "```ansi\n"
+                "\u001b[1;37mVOID system active.\u001b[0m\n"
+                "\u001b[0;90mA unified system for moderation, economy, and interaction.\u001b[0m\n"
+                "```"
+            )
+
+        elif mode == "features":
+            embed.title = "⚙ 𝗩𝗢𝗜𝗗 // FEATURES"
+            embed.description = (
+                "```ansi\n"
+                "\u001b[1;37mSystem modules overview.\u001b[0m\n"
+                "\u001b[0;90mEach module operates under VOID core control.\u001b[0m\n"
+                "```"
+            )
+            embed.clear_fields()
+            embed.add_field(
+                name="𝗠𝗢𝗗𝗨𝗟𝗘𝗦",
+                value=(
+                    "```ansi\n"
+                    "⚙ Admin   → moderation & server control\n"
+                    "💰 Economy → coins, rewards, progression\n"
+                    "🎰 Casino  → games & gambling systems\n"
+                    "🧰 Utility → tools & commands\n"
+                    "```"
+                ),
+                inline=False,
+            )
+
+        elif mode == "status":
+            embed.title = "📡 𝗩𝗢𝗜𝗗 // STATUS"
+            embed.description = (
+                "```ansi\n"
+                "\u001b[1;37mLive system status.\u001b[0m\n"
+                "\u001b[0;90mReal-time operational health.\u001b[0m\n"
+                "```"
+            )
+            embed.clear_fields()
+            embed.add_field(
+                name="STATUS",
+                value=(
+                    "```"
+                    f"Servers : {len(bot.guilds)}\n"
+                    f"Latency : {round(bot.latency * 1000)}ms\n"
+                    "State   : ACTIVE\n"
+                    "Health  : STABLE\n"
+                    "```"
+                ),
+                inline=False,
+            )
+
+        elif mode == "invite":
+            embed.title = "🔗 𝗩𝗢𝗜𝗗 // ACCESS"
+            embed.description = (
+                "```ansi\n"
+                "\u001b[1;37mConnect VOID to your server.\u001b[0m\n"
+                "\u001b[0;90mOne system. All tools.\u001b[0m\n"
+                "```"
+            )
+            embed.clear_fields()
+            embed.add_field(
+                name="INVITE",
+                value=(
+                    "[Invite VOID](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+                ),
+                inline=False,
+            )
+
+        await interaction.response.edit_message(embed=embed, view=self)
+
+    @discord.ui.button(label="Overview", style=discord.ButtonStyle.primary)
+    async def overview(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.update_embed(interaction, "overview")
+
+    @discord.ui.button(label="Features", style=discord.ButtonStyle.secondary)
+    async def features(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.update_embed(interaction, "features")
+
+    @discord.ui.button(label="Status", style=discord.ButtonStyle.secondary)
+    async def status(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.update_embed(interaction, "status")
+
+    @discord.ui.button(label="Invite", style=discord.ButtonStyle.success)
+    async def invite(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.update_embed(interaction, "invite")
+
 @tree.command(name="void", description="Access VOID system overview.")
 async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
@@ -2218,7 +2313,7 @@ async def aboutme(interaction: discord.Interaction):
         icon_url=BOT_THUMBNAIL,
     )
 
-    await interaction.response.send_message(embed=embed)
+    await interaction.response.send_message(embed=embed, view=VoidView())
 
 
 # ══════════════════════════════════════════════════════════════════════════════
