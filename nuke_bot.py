@@ -2122,8 +2122,8 @@ async def aboutme(interaction: discord.Interaction):
         title="⚡ 𝗩𝗢𝗜𝗗 𝗖𝗢𝗥𝗘 // INTERFACE",
         description=(
             "```ansi\n"
-            "\u001b[1;37mVOID awakens...\u001b[0m\n"
-            "\u001b[0;90mwhispers move through the system • presence stabilizes\u001b[0m\n"
+            "\u001b[1;37mVOID system active.\u001b[0m\n"
+            "\u001b[0;90mA unified system for moderation, economy, and interaction.\u001b[0m\n"
             "```"
         ),
         color=0x2B2D31,
@@ -2138,88 +2138,69 @@ async def aboutme(interaction: discord.Interaction):
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
 
-    # ───────────────────────── STATUS (VOID-STYLE)
+    # ───────────────────────── STATUS (clear + readable)
     embed.add_field(
-        name="𝗩𝗢𝗜𝗗 𝗦𝗧𝗔𝗧𝗨𝗦",
+        name="𝗦𝗧𝗔𝗧𝗨𝗦",
         value=(
             "```"
-            "PRESENCE : ACTIVE\n"
-            f"ANCHORS  : {len(bot.guilds)}\n"
-            "FORMS    : ADMIN • ECON • CASINO • UTIL\n"
-            f"ECHO     : {round(bot.latency * 1000)}ms\n"
-            "STATE    : STABLE\n"
+            "State     : ACTIVE\n"
+            f"Servers   : {len(bot.guilds)}\n"
+            "Modules   : Admin / Economy / Casino / Utility\n"
+            f"Latency   : {round(bot.latency * 1000)}ms\n"
+            "Health    : Stable\n"
             "```"
         ),
         inline=False,
     )
 
-    # ───────────────────────── CORE IDENTITY (less tech, more lore)
+    # ───────────────────────── WHAT VOID IS (simple explanation)
     embed.add_field(
-        name="𝗖𝗢𝗥𝗘 𝗣𝗥𝗘𝗦𝗘𝗡𝗖𝗘",
+        name="𝗔𝗕𝗢𝗨𝗧 𝗩𝗢𝗜𝗗",
         value=(
             "```ansi\n"
-            "\u001b[1;37mVOID is not a tool.\u001b[0m\n"
-            "\u001b[0;90mit is a presence that moves through servers.\u001b[0m\n\n"
-            "\u001b[0;90mwhere it exists, order follows...\u001b[0m\n"
+            "\u001b[1;37mVOID is a multi-feature Discord system.\u001b[0m\n"
+            "\u001b[0;90mIt combines moderation tools, economy systems, and games into one bot.\u001b[0m\n"
             "```"
         ),
         inline=False,
     )
 
-    # ───────────────────────── KEEPERS (instead of engineers)
+    # ───────────────────────── BUILD INFO (now understandable)
     embed.add_field(
-        name="𝗞𝗘𝗘𝗣𝗘𝗥𝗦",
-        value=(
-            "𝗧𝗵𝗲 𝗢𝗻𝗲 𝘄𝗵𝗼 𝗦𝗵𝗮𝗽𝗲𝘀 𝘁𝗵𝗲 𝗙𝗮𝗰𝗲\n"
-            "```ansi\n"
-            "\u001b[0;90mkirasauruss — shape • vision • structure\u001b[0m\n"
-            "```\n"
-            "𝗧𝗵𝗲 𝗢𝗻𝗲 𝘄𝗵𝗼 𝗛𝗼𝗹𝗱𝘀 𝘁𝗵𝗲 𝗜𝗻𝗻𝗲𝗿 𝗖𝗼𝗿𝗲\n"
-            "```ansi\n"
-            "\u001b[0;90mladyofthebombs — stability • flow • persistence\u001b[0m\n"
-            "```"
-        ),
-        inline=False,
-    )
-
-    # ───────────────────────── TIMELINE (kept simple)
-    embed.add_field(
-        name="𝗧𝗜𝗠𝗘𝗟𝗜𝗡𝗘",
+        name="𝗕𝗨𝗜𝗟𝗗 𝗜𝗡𝗙𝗢",
         value=(
             "```"
-            "First Echo   : 2023\n"
-            "Forming      : 2025\n"
-            "Present Form : 2025\n"
-            "State        : CONTINUOUS\n"
+            "Started   : 2023\n"
+            "Expanded  : 2025\n"
+            "Current   : 2025\n"
+            "Status    : Actively Developed\n"
             "```"
         ),
         inline=True,
     )
 
-    # ───────────────────────── FORMS (instead of modules)
+    # ───────────────────────── MODULES (clean + obvious)
     embed.add_field(
-        name="𝗙𝗢𝗥𝗠𝗦",
+        name="𝗙𝗘𝗔𝗧𝗨𝗥𝗘𝗦",
         value=(
             "```ansi\n"
-            "⚙ ADMIN   → control of spaces\n"
-            "💰 ECON   → flow of value\n"
-            "🎰 CASINO → chance and risk\n"
-            "🧰 UTIL   → small conveniences\n"
-            "🎨 UI     → how VOID appears\n"
+            "⚙ Admin     → moderation & server control\n"
+            "💰 Economy   → coins, work, rewards\n"
+            "🎰 Casino    → games & gambling systems\n"
+            "🧰 Utility   → tools & commands\n"
             "```"
         ),
         inline=True,
     )
 
-    # ───────────────────────── DIRECTIVE (more poetic)
+    # ───────────────────────── DIRECTIVE (simple, not poetic confusion)
     embed.add_field(
         name="𝗗𝗜𝗥𝗘𝗖𝗧𝗜𝗩𝗘",
         value=(
             "```ansi\n"
-            "\u001b[1;37mstay quiet\n"
-            "stay present\n"
-            "stay consistent\n"
-            "let VOID do the rest\u001b[0m\n"
+            "\u001b[1;37mkeep it clean\n"
+            "keep it useful\n"
+            "keep it fast\u001b[0m\n"
             "```"
         ),
         inline=False,
@@ -2227,15 +2208,15 @@ async def aboutme(interaction: discord.Interaction):
 
     # ───────────────────────── ACCESS
     embed.add_field(
-        name="𝗘𝗡𝗧𝗥𝗬",
+        name="𝗔𝗖𝗖𝗘𝗦𝗦",
         value=(
-            "[Step into VOID](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
+            "[Invite VOID](https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
         inline=False,
     )
 
     embed.set_footer(
-        text="⟦ VOID lingers even when silent ⟧",
+        text="VOID SYSTEM • active and running",
         icon_url=BOT_THUMBNAIL,
     )
 
