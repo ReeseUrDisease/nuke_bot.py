@@ -46,7 +46,7 @@ class C:
 # ✨ AESTHETIC UI SYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
 
-BOT_FOOTER = " ⚡ Powered by HYDRA SYSTEM • Advanced Utility Bot"
+BOT_FOOTER = " ⚡ Powered by Void SYSTEM • Advanced Utility Bot"
 BOT_THUMBNAIL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd34rUyWKn4ajIIL5madx-9in2AJBUAT0WMQ&s"  # replace with your own image if wanted
 
 def _base_embed(title, description=None, color=C.PRIMARY):
@@ -2116,10 +2116,10 @@ async def remove_admin(ctx):
 # ══════════════════════════════════════════════════════════════════════════════
 # ℹ️ ABOUT ME / BOT INFO
 # ══════════════════════════════════════════════════════════════════════════════
-@tree.command(name="aboutme", description="View HYDRA SYSTEM details.")
+@tree.command(name="aboutme", description="View Void SYSTEM details.")
 async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="HYDRA SYSTEM // PROFILE",
+        title="Void SYSTEM // PROFILE",
         description=(
             ">>> **Control. Economy. Games. Presence.**\n"
             "Built for servers that want power without clutter, and style without noise."
@@ -2151,9 +2151,9 @@ async def aboutme(interaction: discord.Interaction):
     )
 
     embed.add_field(
-        name="About HYDRA",
+        name="About Void",
         value=(
-            "**HYDRA SYSTEM** is designed to give a server one strong center of gravity.\n\n"
+            "**Void SYSTEM** is designed to give a server one strong center of gravity.\n\n"
             "Moderation, progression, and fun features all live in one place, "
             "wrapped in a cleaner, more deliberate presentation."
         ),
@@ -2217,14 +2217,14 @@ async def aboutme(interaction: discord.Interaction):
     embed.add_field(
         name="Access",
         value=(
-            "[Invite HYDRA]"
+            "[Invite Void]"
             "(https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
         ),
         inline=False,
     )
 
     embed.set_footer(
-        text="HYDRA SYSTEM • built to stay sharp",
+        text="Void SYSTEM • built to stay sharp",
         icon_url=BOT_THUMBNAIL,
     )
 
