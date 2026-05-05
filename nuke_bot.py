@@ -2121,8 +2121,8 @@ async def aboutme(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Void SYSTEM // PROFILE",
         description=(
-            ">>> **Control. Economy. Games. Presence.**\n"
-            "Built for servers that want power without clutter, and style without noise."
+            ">>> **CONTROL • ECONOMY • CASINO • UTILITY**\n"
+            "Built for servers that want power without clutter."
         ),
         color=C.PRIMARY,
         timestamp=datetime.now(UTC),
@@ -2130,92 +2130,97 @@ async def aboutme(interaction: discord.Interaction):
 
     if bot.user:
         embed.set_author(
-            name=f"{bot.user.name} • Core Overview",
+            name=f"{bot.user.name} • System Overview",
             icon_url=bot.user.display_avatar.url,
         )
 
     embed.set_thumbnail(url=BOT_THUMBNAIL)
 
+    # SYSTEM
     embed.add_field(
-        name="System",
+        name="SYSTEM",
         value=(
             "```"
             "Status   : ONLINE\n"
             f"Servers  : {len(bot.guilds)}\n"
             "Commands : 50+\n"
-            "Modules  : Utility / Economy / Casino\n"
+            "Modules  : Utility • Economy • Casino\n"
             f"Latency  : {round(bot.latency * 1000)}ms"
             "```"
         ),
         inline=False,
     )
 
+    # ABOUT
     embed.add_field(
-        name="About Void",
+        name="ABOUT Void",
         value=(
-            "**Void SYSTEM** is designed to give a server one strong center of gravity.\n\n"
-            "Moderation, progression, and fun features all live in one place, "
-            "wrapped in a cleaner, more deliberate presentation."
+            "**Void SYSTEM** centralizes core server functions into one interface.\n"
+            "Moderation, progression, and entertainment — unified and streamlined."
         ),
         inline=False,
     )
 
+    # CREATORS (cleaned labels)
     embed.add_field(
-        name="Creative Direction",
+        name="CREATIVE",
         value=(
             "**kirasauruss**\n"
-            "Minimal visuals. Dark tone. Clean spacing.\n"
-            "*\"if it looks clean, it's good.\"*"
+            "Minimal design • dark tone\n"
+            "_\"if it looks clean, it's good.\"_"
         ),
         inline=True,
     )
 
     embed.add_field(
-        name="Development",
+        name="DEVELOPMENT",
         value=(
             "**ladyofthebombs**\n"
-            "Built through testing, refining, rebuilding, and shipping.\n"
-            "*\"if it works, don't ask questions.\"*"
+            "Built, tested, refined\n"
+            "_\"if it works, don't ask questions.\"_"
         ),
         inline=True,
     )
 
     embed.add_field(
-        name="Era",
+        name="ERA",
         value=(
-            "**Design:** 2025\n"
-            "**Coding Since:** 2023\n"
-            "**Bot Building:** 2025"
+            "Design: 2025\n"
+            "Coding: 2023\n"
+            "Bots: 2025"
         ),
         inline=True,
     )
 
+    # FEATURES (cleaned bullets)
     embed.add_field(
-        name="Feature Stack",
+        name="FEATURES",
         value=(
-            "• **Moderation**  server control, admin actions, management\n"
-            "• **Economy**  work, rent, rewards, progression, growth\n"
-            "• **Casino**  slots, blackjack, dice, RPS, risk\n"
-            "• **Utilities**  polls, DMs, tools, everyday commands\n"
-            "• **UI**  embeds, buttons, styled system responses"
+            "• Moderation — server control tools\n"
+            "• Economy — rewards, progression\n"
+            "• Casino — risk-based games\n"
+            "• Utilities — polls, DMs, tools\n"
+            "• UI — embeds, buttons, styling"
         ),
         inline=False,
     )
 
+    # PHILOSOPHY (more “VOID” feel)
     embed.add_field(
-        name="Philosophy",
+        name="PHILOSOPHY",
         value=(
             "```"
             "make it useful\n"
             "make it clean\n"
-            "make it hit harder than it has to"
+            "remove everything else"
             "```"
         ),
         inline=False,
     )
 
+    # ACCESS
     embed.add_field(
-        name="Access",
+        name="ACCESS",
         value=(
             "[Invite Void]"
             "(https://discord.com/oauth2/authorize?client_id=1498389493168869479&permissions=8&integration_type=0&scope=bot+applications.commands)"
@@ -2224,7 +2229,7 @@ async def aboutme(interaction: discord.Interaction):
     )
 
     embed.set_footer(
-        text="Void SYSTEM • built to stay sharp",
+        text="Void SYSTEM • minimal by design",
         icon_url=BOT_THUMBNAIL,
     )
 
