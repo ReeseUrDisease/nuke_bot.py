@@ -2147,43 +2147,41 @@ embed.add_field(
 )
 
 
-embed.add_field(
-    name="👨‍💻  About the Creator",
-    value=(
-        "Created by **ladyofthebombs**\n\n"
-        "• Started coding in **2023** (no idea what was going on)\n"
-        "• Tries a bit of everything\n"
-        "• Building bots since **2025** (slightly more idea now)\n\n"
-        "_\"if it works, don’t ask questions.\"_"
-    ),
-    inline=False
-)
+    embed.add_field(
+        name="👨‍💻  About the Creator",
+        value=(
+            "Created by **ladyofthebombs**\n\n"
+            "• Started coding in **2023** (no idea what was going on)\n"
+            "• Tries a bit of everything\n"
+            "• Building bots since **2025** (slightly more idea now)\n\n"
+            "_\"if it works, don’t ask questions.\"_"
+        ),
+        inline=False
+    )
 
-    
     # Origin Story
     embed.add_field(
         name="📖  The Origin Story",
         value=(
-            "[Tell your story here! How did you start making Discord bots? "
-            "What inspired you to create HYDRA SYSTEM? What challenges did you face? "
-            "What are you most proud of?]\n\n"
-            "This bot represents **[X]** hours of development, countless late nights, "
-            "and a commitment to creating something truly special for the Discord community."
+            "Started messing around with bots out of curiosity and it just stuck.\n\n"
+            "Turned into late nights fixing bugs, testing random ideas, "
+            "and slowly building something that actually works.\n\n"
+            "Still improving it every day."
         ),
         inline=False
     )
-    
+
     # Features Highlight
     embed.add_field(
         name="⚡  Key Features",
         value=(
             "• **Server Management** — Mass moderation\n"
-            "• **Economy System** — Work, daily rewards, and career progression\n"
-            "• **Casino Games** — Slots, Blackjack, RPS, Dice, and more\n"
+            "• **Economy System** — Work, daily rewards, progression\n"
+            "• **Casino Games** — Slots, Blackjack, RPS, Dice\n"
             "• **Utility Commands** — DM all, spam channels, polls\n"
-            "• **Custom UI** — Beautiful embeds and interactive buttons"
+            "• **Custom UI** — Clean embeds + buttons"
         ),
-        inline=False
+    inline=False
     )
     
     # Stats
