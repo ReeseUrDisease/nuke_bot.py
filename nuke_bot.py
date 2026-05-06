@@ -2312,7 +2312,7 @@ async def on_guild_join(guild):
         ),
         C.PRIMARY,
     )
-    step1.set_image(url=ROLE_GUIDE_IMAGE_1)
+    step1.set_image(url=ROLE_SETUP_IMAGE_1)
     step1.set_footer(text="Step 1 of 3 • Open Server Settings", icon_url=BOT_THUMBNAIL)
 
     step2 = _base_embed(
@@ -2323,7 +2323,7 @@ async def on_guild_join(guild):
         ),
         C.PRIMARY,
     )
-    step2.set_image(url=ROLE_GUIDE_IMAGE_2)
+    step2.set_image(url=ROLE_SETUP_IMAGE_2)
     step2.set_footer(text="Step 2 of 3 • Open Roles", icon_url=BOT_THUMBNAIL)
 
     step3 = _base_embed(
@@ -2334,7 +2334,7 @@ async def on_guild_join(guild):
         ),
         C.SUCCESS,
     )
-    step3.set_image(url=ROLE_GUIDE_IMAGE_3)
+    step3.set_image(url=ROLE_SETUP_IMAGE_3)
     step3.set_footer(text="Step 3 of 3 • Move Void Up", icon_url=BOT_THUMBNAIL)
 
     await channel.send(embeds=[intro, step1, step2, step3])
