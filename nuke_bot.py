@@ -2330,7 +2330,7 @@ async def on_guild_join(guild):
         "Step 3 • Move The Bot Role Up",
         (
             f"Drag **{me.display_name}** above the roles you want it to manage.\n\n"
-            "For best results, place it as high as possible in the hierarchy."
+            "**For best results**, place it as high as possible in the hierarchy."
         ),
         C.SUCCESS,
     )
