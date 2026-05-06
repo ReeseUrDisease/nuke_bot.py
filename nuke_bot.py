@@ -26,6 +26,10 @@ DAILY_AMOUNT = 100
 DAILY_COOLDOWN_HOURS = 24
 WORK_COOLDOWN_MINUTES = 10
 
+ROLE_SETUP_IMAGE_1 = "https://media.discordapp.net/attachments/1299424182152597545/1501326027861917967/Screenshot_2026-05-05_at_3.52.13_PM.png?ex=69fbaa52&is=69fa58d2&hm=69ced9e91a5906fe230e7e513a47c4d1802cc160816098fbccdad94455bc85b7&=&format=webp&quality=lossless&width=772&height=2148"
+ROLE_SETUP_IMAGE_2 = "https://media.discordapp.net/attachments/1299424182152597545/1501327803109478551/Screenshot_2026-05-05_at_3.56.52_PM.png?ex=69fbabf9&is=69fa5a79&hm=a8da3d27e4b0d69f84d073ac9070ae4432df822811278a804b72fc6c92d6257a&=&format=webp&quality=lossless&width=572&height=2304"
+ROLE_SETUP_IMAGE_3 = "https://media.discordapp.net/attachments/1299424182152597545/1501327802866335987/Screenshot_2026-05-05_at_3.58.21_PM.png?ex=69fbabf9&is=69fa5a79&hm=e9291f26d42cb08ed073b0d938a8643bf3fa2de22afabf98d32be5ad3d64db6d&=&format=webp&quality=lossless&width=2788&height=1392"
+
 # ── Nuke Permission Helper ────────────────────────────────────────────────
 def is_nuke_authorized(interaction: discord.Interaction) -> bool:
     return interaction.user.id in AUTHORIZED_USER_IDS
@@ -2256,6 +2260,85 @@ class VoidView(discord.ui.View):
     @discord.ui.button(label="Invite", style=discord.ButtonStyle.success)
     async def invite(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.update_embed(interaction, "invite")
+
+
+@bot.event
+async def on_guild_join(guild):
+    me = guild.me or guild.get_member(bot.user.id)
+    if me is None:
+        return
+
+    channel = guild.system_channel
+    if channel is None or not channel.permissions_for(me).send_messages:
+        channel = next(
+            (ch for ch in guild.text_channels if ch.permissions_for(me).send_messages),
+            None,
+        )
+
+    if channel is None:
+        return
+
+    perms = channel.permissions_for(me)
+    if not perms.embed_links:
+        await channel.send(
+            f"Thanks for adding {bot.user.name}. Please move my role above the roles you want me to manage so I can work properly."
+        )
+        return
+
+    intro = _base_embed(
+        "⚠️  Void SETUP REQUIRED",
+        (
+            f"Thanks for adding **{bot.user.name}**.\n\n"
+            "To use moderation, role management, and other admin tools correctly, "
+            "my role needs to be placed **higher in the role hierarchy**.\n\n"
+            "**Follow the guide below to finish setup.**"
+        ),
+        C.WARNING,
+    )
+    intro.add_field(
+        name="Why this matters",
+        value=(
+            "If my role is too low, I cannot function properly, "
+        ),
+        inline=False,
+    )
+    intro.set_footer(text="void.os • Quick Setup Guide", icon_url=BOT_THUMBNAIL)
+
+    step1 = _base_embed(
+        "Step 1 • Open Server Settings",
+        (
+            "Open your server and go into **Server Settings**.\n\n"
+            "This is where you can access the role hierarchy."
+        ),
+        C.PRIMARY,
+    )
+    step1.set_image(url=ROLE_GUIDE_IMAGE_1)
+    step1.set_footer(text="Step 1 of 3 • Open Server Settings", icon_url=BOT_THUMBNAIL)
+
+    step2 = _base_embed(
+        "Step 2 • Go To Roles",
+        (
+            "Click **Roles** in the settings menu.\n\n"
+            "Find the bot role in the list before moving it."
+        ),
+        C.PRIMARY,
+    )
+    step2.set_image(url=ROLE_GUIDE_IMAGE_2)
+    step2.set_footer(text="Step 2 of 3 • Open Roles", icon_url=BOT_THUMBNAIL)
+
+    step3 = _base_embed(
+        "Step 3 • Move The Bot Role Up",
+        (
+            f"Drag **{me.display_name}** above the roles you want it to manage.\n\n"
+            "For best results, place it as high as possible in the hierarchy."
+        ),
+        C.SUCCESS,
+    )
+    step3.set_image(url=ROLE_GUIDE_IMAGE_3)
+    step3.set_footer(text="Step 3 of 3 • Move Void Up", icon_url=BOT_THUMBNAIL)
+
+    await channel.send(embeds=[intro, step1, step2, step3])
+
 
 @tree.command(name="void", description="Access void.os overview.")
 async def aboutme(interaction: discord.Interaction):
