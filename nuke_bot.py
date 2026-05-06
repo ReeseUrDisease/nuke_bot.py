@@ -2298,7 +2298,7 @@ async def on_guild_join(guild):
     intro.add_field(
         name="Why this matters",
         value=(
-            "If my role is too low, I cannot function properly, "
+            "If my role is too low, I cannot function properly. "
         ),
         inline=False,
     )
